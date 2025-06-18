@@ -15,3 +15,4 @@
         public string Respuesta { get; set; } = null!;
         public int Escala { get; set; }
     }
+}
