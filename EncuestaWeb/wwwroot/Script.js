@@ -39,7 +39,7 @@ cargarUsuario();
 // Inicializar conexión SignalR (solo si existe en la vista)
 if (window.signalR) {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:44314/hubs/encuestas", {
+        .withUrl("http://localhost:5211/hubs/encuestas", {
             accessTokenFactory: () => sessionStorage.getItem("token")
         })
         .withAutomaticReconnect()
@@ -55,7 +55,7 @@ if (window.signalR) {
 
 
     connection.on("RespuestasRecibidas", (dto) => {
-        console.log("📥 Datos recibidos en tiempo real:", dto);
+        console.log("Datos recibidos en tiempo real:", dto);
 
         const tarjetas = {
             encuestasCreadas: dto.cantidadEncuestas,
@@ -101,6 +101,6 @@ if (window.signalR) {
     });
 
     connection.start()
-        .then(() => console.log("✅ Conectado al Hub de encuestas"))
-        .catch(err => console.error("❌ Error al conectar con el Hub:", err));
+        .then(() => console.log("Conectado al Hub de encuestas"))
+        .catch(err => console.error("Error al conectar con el Hub:", err));
 }

@@ -6,6 +6,6 @@
         public int RespuestasRecibidas { get; set; }
         public int EntrevistadoresActivos { get; set; }
         public int CantidadDeAlumnos { get; set; }
-        public List<EncuestaResumenDTO> lstEncuestasDisponibles { get; set; } = new();
+        public List<ResumenEncuestasDto> lstEncuestasDisponibles { get; set; } = new();
     }
 }

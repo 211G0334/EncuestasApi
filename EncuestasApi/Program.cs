@@ -31,7 +31,6 @@ namespace EncuenstasAPI
                     ValidateLifetime = true
                 };
 
-                // ?? Esto es clave para que funcione con SignalR WebSocket
                 options.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
@@ -63,14 +62,7 @@ namespace EncuenstasAPI
 
             builder.Services.AddControllers();
 
-            //builder.Services.AddCors(x =>
-            //{
-            //    x.AddPolicy("todos", builder =>
-            //    {
-            //        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            //    });
-            //});
-
+          
             builder.Services.AddCors(x =>
             {
                 x.AddPolicy("todos", builder =>
