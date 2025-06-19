@@ -61,7 +61,11 @@ namespace EncuestasApi.Controllers
                     Contraseña = usuarioDto.Contraseña,
                     Nombre = usuarioDto.Nombre
                 };
-                return Ok();
+                _repository.Insert(usuarios); 
+
+                var token = _jwtService.GenerarToken(usuarioDto);
+                return Ok(new { token = token, mensaje = "Usuario registrado y autenticado" });
+
             }
             else
             {

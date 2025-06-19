@@ -40,12 +40,18 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    alert(data.mensaje || "Registrado correctamente.");
-                    window.location.href = "dashboard.html"; // nota: verifica el nombre correcto del archivo
+                    if (data.token) {
+                        sessionStorage.setItem("token", data.token); // Guardar token
+                        window.location.href = "dashboard.html";
+                    } else {
+                        alert("Registro correcto, pero no se recibió el token.");
+                    }
                 } else {
                     const error = await response.text();
                     alert(error);
                 }
+
+
 
             } catch (error) {
                 alert("Error de red o servidor: " + error.message);
