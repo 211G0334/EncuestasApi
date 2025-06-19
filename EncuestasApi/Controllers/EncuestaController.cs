@@ -68,8 +68,8 @@ namespace EncuestasApi.Controllers
                 lstEncusta = lista
             });
         }
-
-        [HttpPost]
+        //agrega encuesta y la guarda correctamente
+        [HttpPost("addEncuesta")]
         public IActionResult Post(EncuestaDto dto)
         {
             if (valitador.Validate(dto, out List<string> errores))
