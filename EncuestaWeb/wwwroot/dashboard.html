@@ -21,14 +21,12 @@
             </div>
         </nav>
     </header>
-
     <main class="dashboard">
         <h1> Panel de Control</h1>
         <div class="dashboard-cards">
-            <div class="card card-blue" id="encuestasCreadas">0<br><span>Encuestas Creadas</span></div>
-            <div class="card card-green" id="respuestasRecibidas">0<br><span>Respuestas Recibidas</span></div>
-            <div class="card card-yellow" id="entrevistadoresActivos">0<br><span>Entrevistadores Activos</span></div>
-            <div class="card card-cyan" id="estudiantesEncuestados">0<br><span>Estudiantes Encuestados</span></div>
+            <div class="card card-blue" id="encuestasCreadas">0<br><span>Encuestas creadas</span></div>
+            <div class="card card-green" id="respuestasRecibidas">0<br><span>Total de respuestas recibidas</span></div>
+            <div class="card card-cyan" id="estudiantesEncuestados">0<br><span>Total de estudiantes encuestados</span></div>
 
         </div>
 
@@ -68,13 +66,12 @@
                     console.log(data);
 
                     document.getElementById("encuestasCreadas").innerHTML = `
-                        ${data.cantidadEncuestas}<br><span>Encuestas Creadas</span>`;
+                                    ${data.cantidadEncuestas}<br><span>Encuestas creadas</span>`;
                     document.getElementById("respuestasRecibidas").innerHTML = `
-                         ${data.respuestasRecibidas}<br><span>Respuestas Recibidas</span>`;
-                    document.getElementById("entrevistadoresActivos").innerHTML = `
-                        ${data.entrevistadoresActivos}<br><span>Entrevistadores Activos</span>`;
+                                     ${data.respuestasRecibidas}<br><span>Total de respuestas recibidas</span>`;
+                   
                     document.getElementById("estudiantesEncuestados").innerHTML = `
-                        ${data.cantidadDeAlumnos}<br><span>Estudiantes Encuestados</span>`;
+                                    ${data.cantidadDeAlumnos}<br><span>Total de estudiantes encuestados</span>`;
 
                     const cuerpoTabla = document.getElementById("tablaEncuestas");
                     cuerpoTabla.innerHTML = "";
@@ -90,12 +87,35 @@
                             const fecha = new Date(encuesta.fechaCreacion);
                             const usuarioCreador = encuesta.lstUsuarioCreador.map(u => u.nombre);
                             fila.innerHTML = `
-        <td data-label="Título">${encuesta.titulo}</td>
-        <td data-label="Preguntas">${preguntasTexto}</td>
-        <td data-label="Creado por">${usuarioCreador}</td>
-        <td data-label="Fecha">${fecha.toLocaleDateString()}</td>`;
+      <td data-label="Título">${encuesta.titulo}</td>
+      <td data-label="Preguntas">${preguntasTexto}</td>
+      <td data-label="Creado por">${usuarioCreador}</td>
+      <td data-label="Fecha">${fecha.toLocaleDateString()}</td>
+      <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
+
 
                             cuerpoTabla.appendChild(fila);
+                            fila.querySelector(".btnEliminar").addEventListener("click", async () => {
+                                if (!confirm("¿Estás seguro de eliminar esta encuesta?")) return;
+
+                                try {
+                                    const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
+                                        method: "DELETE",
+                                        headers: {
+                                            "Authorization": "Bearer " + sessionStorage.getItem("token"),
+                                        },
+                                    });
+
+                                    const mensaje = await res.text();
+
+                                    if (!res.ok) throw new Error(mensaje);
+                                    alert("✅ " + mensaje);
+                                    cargardatos(); // recarga la tabla
+                                } catch (err) {
+                                    alert("❌ " + err.message);
+                                }
+                            });
+
                         });
                     } else {
                         const filaVacia = document.createElement("tr");

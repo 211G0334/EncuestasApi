@@ -47,8 +47,6 @@
 
         <form id="formulario" class="form-actions">
             <button class="btn-save" type="submit" id="btnEncuesta">📂 Guardar Encuesta</button>
-            <button class="btn-edit" type="button" id="btnEditar">✏️ Editar Encuesta</button>
-            <a class="btn-delete" href="eliminar_encuesta.html">🗑️ Eliminar Encuesta</a>
         </form>
     </div>
 
@@ -88,10 +86,10 @@
             const grupo = document.createElement("div");
             grupo.className = "input-group";
             grupo.innerHTML = `
-                    <span>${numero}</span>
-                    <input type="text" placeholder="Escriba su pregunta aquí...">
-                    <button type="button" onclick="eliminarPregunta(this)">🗑️</button>
-                `;
+                        <span>${numero}</span>
+                        <input type="text" placeholder="Escriba su pregunta aquí...">
+                        <button type="button" onclick="eliminarPregunta(this)">🗑️</button>
+                    `;
             preguntas.appendChild(grupo);
             actualizarContador();
         });

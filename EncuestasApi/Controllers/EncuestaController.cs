@@ -130,49 +130,6 @@ namespace EncuestasApi.Controllers
         }
 
 
-        [HttpPut("editar")]
-        public IActionResult EditarEncuesta([FromBody] EditarEncuestasDto dto)
-        {
-            var encuesta = repository.Get(dto.Id);
-            if (encuesta == null)
-                return NotFound("Encuesta no encontrada");
-
-            encuesta.Titulo = dto.Titulo;
-            repository.Update(encuesta);
-
-            bool yaAplicada = aplicacionRepository.GetAll().Any(a => a.EncuestaId == dto.Id);
-            if (yaAplicada)
-            {
-                return Ok("Solo se actualizó el título. Las preguntas no pueden modificarse porque ya hay respuestas registradas.");
-            }
-
-            var todas = preguntasRepository.GetAll()
-                .Where(p => p.EncuestaId == dto.Id)
-                .ToList();
-
-            foreach (var preguntaDTO in dto.Preguntas)
-            {
-                if (preguntaDTO.Id == 0)
-                {
-                    preguntasRepository.Insert(new Preguntas
-                    {
-                        Texto = preguntaDTO.Texto,
-                        EncuestaId = dto.Id
-                    });
-                }
-                else
-                {
-                    var encontrada = todas.FirstOrDefault(p => p.Id == preguntaDTO.Id);
-                    if (encontrada != null)
-                    {
-                        encontrada.Texto = preguntaDTO.Texto;
-                        preguntasRepository.Update(encontrada);
-                    }
-                }
-            }
-
-            return Ok("Encuesta actualizada");
-        }
 
 
         //eliminar encuesta por id
