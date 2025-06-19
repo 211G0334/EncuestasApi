@@ -6,8 +6,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Registro de Nuevo Alumno</h1>
-    <form class="formulario">
+    <form id="registroForm" class="formulario">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" required>
 
@@ -16,17 +15,18 @@
 
         <button type="submit" class="btn">Registrarse</button>
     </form>
-    <script>
-        const formIncioSesion = document.getElementById("loginForm");
-        const inputNombre = document.getElementById("nombre");
-        const inputPassword = document.getElementById("matricula");
 
-        formIncioSesion.addEventListener("submit", async function (e) {
+    <script>
+        const formRegistro = document.getElementById("registroForm");
+        const inputNombre = document.getElementById("nombre");
+        const inputMatricula = document.getElementById("matricula");
+
+        formRegistro.addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const dto = {
                 nombre: inputNombre.value,
-                contraseña: inputPassword.value
+                contraseña: inputMatricula.value  // se manda como "contraseña"
             };
 
             try {
@@ -39,7 +39,9 @@
                 });
 
                 if (response.ok) {
-                    window.location.href = "dashaboard.html";
+                    const data = await response.json();
+                    alert(data.mensaje || "Registrado correctamente.");
+                    window.location.href = "dashboard.html"; // nota: verifica el nombre correcto del archivo
                 } else {
                     const error = await response.text();
                     alert(error);
@@ -50,5 +52,6 @@
             }
         });
     </script>
+
 </body>
 </html>
