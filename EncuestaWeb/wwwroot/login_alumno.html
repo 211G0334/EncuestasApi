@@ -30,12 +30,11 @@
 
             let dto = {
                 "nombre": txtNombre.value,
-                "numerocontrol": matricula.value,
-                "idencuesta": id
+                "contraseña": matricula.value,
             };
 
             try {
-                let response = await fetch("https://localhost:44341/api/Alumno/login", {
+                let response = await fetch("https://localhost:44341/api/Usuario/login", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -44,8 +43,8 @@
                 });
 
                 if (response.ok) {
-                    window.location.href = `responder_encuesta.html?encuestaId=${id}&numcontrol=${txtControl.value}`;
-                    localStorage.setItem("numControl", txtControl.value);
+                    window.location.href = "dashboard.html";
+                    localStorage.setItem("numControl", matricula.value);
                 }
             } catch (error) {
                 alert("Error de red o servidor: " + error.message);

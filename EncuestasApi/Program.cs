@@ -31,17 +31,18 @@ namespace EncuenstasAPI
 
             builder.Services.AddControllers();
 
-
-            builder.Services.AddCors(x =>
+            builder.Services.AddCors(options =>
             {
-                x.AddPolicy("todos", builder =>
+                options.AddPolicy("PermitirTodo", policy =>
                 {
-                    builder.WithOrigins("https://localhost:7020", "http://localhost:44341")
-                           .AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .AllowCredentials();
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                 });
             });
+
+           
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
@@ -80,8 +81,9 @@ namespace EncuenstasAPI
 
             var app = builder.Build();
 
-            app.UseCors("todos");
-
+            //app.UseCors("todos");
+            app.UseCors("PermitirTodo");
+            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapGet("/", () => "Solo para que se vea algo");
