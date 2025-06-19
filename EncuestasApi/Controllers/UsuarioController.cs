@@ -15,18 +15,15 @@ namespace EncuestasApi.Controllers
     public class UsuarioController : ControllerBase
     {
         Repository<Usuarios> _repository;
-        Repository<Alumnos> _repository2;
         UsuariosValidator _validator;
         JWTService _jwtService;
         public UsuarioController(
             Repository<Usuarios> repo,
-            Repository<Alumnos>repo2,
             UsuariosValidator validador,
             JWTService Jwt)
         {
             _jwtService = Jwt;
             _repository = repo;
-            _repository2 = repo2;
             _validator = validador;
         }
         //Ingreso de usuarios registrados
@@ -48,7 +45,7 @@ namespace EncuestasApi.Controllers
         public IActionResult Registrar(UsuarioDto usuarioDto)
         {
 
-            var existe = _repository2.GetAll().FirstOrDefault(x => x.NumeroControl == usuarioDto.Contraseña);
+            var existe = _repository.GetAll().FirstOrDefault(x => x.Id == usuarioDto.Id);
             if (existe != null)
             {
                 return Ok(new
