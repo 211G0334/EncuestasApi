@@ -93,33 +93,37 @@ namespace EncuestasApi.Controllers
             {
                 var encuesta = encuestas.FirstOrDefault(e => e.Id == item.EncuestaId);
                 if (encuesta == null) { return BadRequest(); }
-                var preguntasEncuesta = preguntas.Where(p => p.EncuestaId == encuesta.Id).ToList();
-
-                var preguntaConRespuesta = preguntasEncuesta.Select(p =>
+                else
                 {
 
-                    var r = respuestas.FirstOrDefault(r => r.EncuestaId == encuesta.Id && r.PreguntaId == p.Id);
-                    var escala = r?.Escala ?? 0;
+                    var preguntasEncuesta = preguntas.Where(p => p.EncuestaId == encuesta.Id).ToList();
 
-                    string interpretacion = interpretaciones.ContainsKey(escala) ? interpretaciones[escala] : "Sin respuesta";
-                    return new PreguntaRespuestaDTO
+                    var preguntaConRespuesta = preguntasEncuesta.Select(p =>
                     {
-                        PreguntaId = p.Id,
-                        Texto = p.Texto,
-                        Escala = escala,
-                        Respuesta = interpretacion
-                    };
-                }).ToList();
 
-                resultado.Add(new EncuestaConRespDto
-                {
-                    NumeroConreol = alumno.Nombre,
-                    Id = encuesta.Id,
-                    Titulo = encuesta.Titulo,
-                    lstPreguntas = preguntaConRespuesta
-                });
+                        var r = respuestas.FirstOrDefault(r => r.EncuestaId == encuesta.Id && r.PreguntaId == p.Id);
+                        var escala = r?.Escala ?? 0;
+
+                        string interpretacion = interpretaciones.ContainsKey(escala) ? interpretaciones[escala] : "Sin respuesta";
+                        return new PreguntaRespuestaDTO
+                        {
+                            PreguntaId = p.Id,
+                            Texto = p.Texto,
+                            Escala = escala,
+                            Respuesta = interpretacion
+                        };
+                    }).ToList();
+
+                    resultado.Add(new EncuestaConRespDto
+                    {
+                        NumeroConreol = alumno.Nombre,
+                        Id = encuesta.Id,
+                        Titulo = encuesta.Titulo,
+                        lstPreguntas = preguntaConRespuesta
+                    });
+                }
+
             }
-
             return Ok(resultado);
         }
         [HttpGet("porencuesta")]
@@ -179,7 +183,7 @@ namespace EncuestasApi.Controllers
                     });
                 }
             }
-                    return Ok(resultado);
+            return Ok(resultado);
 
         }
 

@@ -14,41 +14,49 @@ namespace EncuestasApi.Services
 
         public string? GenerarToken(UsuarioDto dto)
         {
-            //Buscar si existe en la bd el usuario
+            // Validar si la configuración es nula o si faltan claves esenciales
+            var issuer = Configuration["Jwt:Issuer"];
+            var audience = Configuration["Jwt:Audience"];
+            var key = Configuration?["Jwt:Key"];
+
+            if (issuer == null || audience == null || key == null)
+            {
+
+                return null;
+            }
+
+            // Buscar si existe en la bd el usuario
             var usuario = Repository.GetAll()
                 .FirstOrDefault(x => x.Nombre == dto.Nombre &&
-                x.Contraseña == dto.Contraseña);
+                                     x.Contraseña == dto.Contraseña);
 
             if (usuario == null)
             {
                 return null;
             }
-            else
-            {
-                //1. Crear las claims
 
-                List<Claim> claims = new List<Claim>()
-                {
-                    new Claim("Id", usuario.Id.ToString()),
-                    new Claim(ClaimTypes.Name, usuario.Nombre)
-                };
+            // Crear las claims
+            List<Claim> claims = new List<Claim>()
+    {
+        new Claim("Id", usuario.Id.ToString()),
+        new Claim(ClaimTypes.Name, usuario.Nombre)
+    };
 
-                //2. Crear un descriptor de token
+            // Crear el token descriptor
+            var descriptor = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(5),
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key)),
+                    SecurityAlgorithms.HmacSha256)
+            );
 
-                var descriptor = new JwtSecurityToken(
-                    issuer: Configuration["Jwt:Issuer"],
-                    audience: Configuration["Jwt:Audience"],
-                    claims: claims,
-
-                    expires: DateTime.UtcNow.AddMinutes(5),
-                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])), SecurityAlgorithms.HmacSha256)
-                    );
-                //3. Crear un JWT
-                var handler = new JwtSecurityTokenHandler();
-                return handler.WriteToken(descriptor);
-            }
-
+            // Generar el token
+            var handler = new JwtSecurityTokenHandler();
+            return handler.WriteToken(descriptor);
         }
+
     }
 }
