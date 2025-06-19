@@ -6,13 +6,114 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Historial de Encuestas</h1>
-    <div class="resultados">
-        <ul>
-            <li>Encuesta 1 - Grupo A</li>
-            <li>Encuesta 2 - Grupo B</li>
-            <!-- Listado dinámico -->
-        </ul>
+    <header>
+        <div class="logo">🎓 Encuestas Escolares</div>
+        <nav>
+            <a href="dashboard.html">Panel</a>
+            <a href="crearencuesta.html">+ Crear Encuesta</a>
+            <a href="AplicarEncuesta.html">🔒 Aplicar Encuesta</a>
+            <a href="ResultadoEncuesta.html" class="active">📊 Resultados</a>
+            <a href="resultados_alumno.html">👤 Alumno</a>
+            <button class="logout-btn" id="exit">Salir</button>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h3>📊 Resultados de Encuesta</h3>
+        <div id="contenedorResultados">
+            <!-- Resultados se insertan aquí -->
+        </div>
     </div>
+
+    <script>
+        let token = sessionStorage.getItem("token");
+        const contenedor = document.getElementById("contenedorResultados");
+        const params = new URLSearchParams(window.location.search);
+        const encuestaId = params.get("encuestaId");
+
+        const etiquetas = {
+            "Valor 1": "Muy malo",
+            "Valor 2": "Malo",
+            "Valor 3": "Regular",
+            "Valor 4": "Bueno",
+            "Valor 5": "Excelente"
+        };
+
+        async function cargarResultados(id) {
+            try {
+                contenedor.innerHTML = "<p class='empty'>Cargando resultados...</p>";
+
+                const res = await fetch(`https://localhost:44341/api/resultados?idEncuesta=${id}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (!res.ok) throw new Error("No se pudieron obtener los resultados.");
+                const data = await res.json();
+
+                contenedor.innerHTML = ""; // Limpiar resultados anteriores
+                document.querySelector("h3").textContent = `📊 Resultados: ${data.titulo}`;
+
+                if (!data.lstPreguntas || data.lstPreguntas.length === 0) {
+                    contenedor.innerHTML = `<p class="empty">No hay preguntas asociadas a esta encuesta.</p>`;
+                    return;
+                }
+
+                data.lstPreguntas.forEach(pregunta => {
+                    const divPregunta = document.createElement("div");
+                    divPregunta.classList.add("pregunta");
+
+                    const titulo = document.createElement("h5");
+                    titulo.textContent = pregunta.texto;
+                    divPregunta.appendChild(titulo);
+
+                    pregunta.opciones.forEach(op => {
+                        const divOpcion = document.createElement("div");
+                        divOpcion.classList.add("opcion");
+
+                        const texto = document.createElement("span");
+                        texto.textContent = etiquetas[op.descripcion] || op.descripcion;
+
+                        const porcentaje = document.createElement("span");
+                        porcentaje.classList.add("porcentaje");
+                        porcentaje.textContent = `(${op.porcentaje.toFixed(1)}%)`;
+
+                        const barra = document.createElement("div");
+                        barra.classList.add("barra");
+
+                        const relleno = document.createElement("div");
+                        relleno.classList.add("relleno");
+                        relleno.style.width = `${op.porcentaje}%`;
+
+                        barra.appendChild(relleno);
+                        divOpcion.appendChild(texto);
+                        divOpcion.appendChild(porcentaje);
+                        divOpcion.appendChild(barra);
+
+                        divPregunta.appendChild(divOpcion);
+                    });
+
+                    contenedor.appendChild(divPregunta);
+                });
+
+            } catch (err) {
+                contenedor.innerHTML = `<p style="color:red;">Error al cargar resultados: ${err.message}</p>`;
+            }
+        }
+
+        if (encuestaId) {
+            cargarResultados(encuestaId);
+        } else {
+            contenedor.innerHTML = `<p style="color:red;">No se proporcionó un ID de encuesta válido.</p>`;
+        }
+
+        document.getElementById("exit").addEventListener("click", () => {
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        });
+    </script>
 </body>
 </html>

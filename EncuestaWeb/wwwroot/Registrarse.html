@@ -16,5 +16,41 @@
 
         <button type="submit" class="btn">Registrarse</button>
     </form>
+      <script>
+      let formulario = document.querySelector("form");
+      let nombre = document.getElementById("nombre");
+      let matricula = document.getElementById("matricula");
+      let urlParametro = new URLSearchParams(window.location.search);
+      const id = urlParametro.get("encuestaId");
+
+      
+
+      formulario.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          let dto = {
+              "nombre": nombre.value,
+              "numerocontrol": matricula.value,
+              "idencuesta": id
+          };
+
+          try {
+              let response = await fetch("https://localhost:44341/api/Alumno/login", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(dto)
+              });
+
+              if (response.ok) {
+                  window.location.href = `responder_encuesta.html?encuestaId=${id}&numcontrol=${txtControl.value}`;
+                  localStorage.setItem("numControl", txtControl.value);
+              }
+          } catch (error) {
+              alert("Error de red o servidor: " + error.message);
+          }
+      });
+  </script>
 </body>
 </html>

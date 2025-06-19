@@ -6,19 +6,75 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Aplicar Encuesta</h1>
-    <form class="formulario">
-        <label for="encuesta">Selecciona una Encuesta:</label>
-        <select id="encuesta" required>
-            <option value="">-- Selecciona --</option>
-            <!-- Opciones dinámicas -->
+    <header class="navbar">
+        <div class="navbar-title">🎓 Encuestas Escolares</div>
+        <nav class="navbar-links">
+            <a href="dashboard.html">Panel</a>
+            <a href="crearencuesta.html">Crear Encuesta</a>
+            <a href="AplicarEncuesta.html">Aplicar Encuesta</a>
+            <a href="ResultadoEncuesta.html">Resultados</a>
+            <div class="user-actions">
+                <span id="nombreUser"></span>
+                <button class="logout-btn" id="exit">Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h3>🔒 Aplicar Encuesta</h3>
+        <p>Seleccione una encuesta para comenzar a recolectar respuestas</p>
+
+        <label for="seleccionarEncuesta">Seleccionar Encuesta</label>
+        <select id="seleccionarEncuesta">
+            <option selected disabled>Seleccione una encuesta...</option>
         </select>
 
-        <label for="grupo">Grupo:</label>
-        <input type="text" id="grupo" required>
+        <button id="btnAplicar">▶ Iniciar Nueva Respuesta</button>
+    </div>
 
-        <button type="submit" class="btn">Aplicar</button>
-    </form>
+    <script src="Script.js"></script>
+    <script>
+        const lisEncuestas = document.getElementById("seleccionarEncuesta");
+        const btn = document.getElementById("btnAplicar");
+
+        async function getEncuestas() {
+            try {
+                const response = await fetch("https://localhost:44341/api/encuestas", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                const data = await response.json();
+                const elementos = data.lstEncusta;
+
+                elementos.forEach(x => {
+                    const nuevo = document.createElement("option");
+                    nuevo.value = x.id;
+                    nuevo.text = x.titulo;
+                    lisEncuestas.appendChild(nuevo);
+                });
+            } catch (err) {
+                alert("Error al cargar encuestas: " + err.message);
+            }
+        }
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const id = lisEncuestas.value;
+            if (!id || id === "Seleccione una encuesta...") {
+                alert("Por favor seleccione una encuesta.");
+                return;
+            }
+
+            window.open(`login_alumno.html?encuestaId=${id}`, '_blank');
+        });
+
+        getEncuestas();
+    </script>
+
 </body>
 </html>
 

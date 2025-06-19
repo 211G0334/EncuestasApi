@@ -4,21 +4,144 @@
     <meta charset="UTF-8">
     <title>Responder Encuesta</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
 </head>
 <body>
-    <h1>Responde la Encuesta</h1>
-    <form class="formulario">
-        <!-- Preguntas y respuestas generadas dinámicamente -->
-        <div class="pregunta">
-            <p>¿Qué tan satisfecho estás?</p>
-            <label><input type="radio" name="pregunta1" value="1"> 1</label>
-            <label><input type="radio" name="pregunta1" value="2"> 2</label>
-            <label><input type="radio" name="pregunta1" value="3"> 3</label>
-            <label><input type="radio" name="pregunta1" value="4"> 4</label>
-            <label><input type="radio" name="pregunta1" value="5"> 5</label>
-        </div>
+    <div class="container">
 
-        <button type="submit" class="btn">Enviar Respuestas</button>
-    </form>
+        <form>
+            <h3>Encuesta: Nombre de la Encuesta</h3>
+            <div id="contenedorPreguntas">
+                <!-- Preguntas se insertarán aquí -->
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit">Enviar Respuestas</button>
+                <button type="button" class="btn-cancelar" onclick="window.location.href='dashboard.html'">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let titulo = document.querySelector("h3");
+        let formulario = document.querySelector("form");
+        let divContenedor = document.getElementById("contenedorPreguntas");
+
+        const urlParametro = new URLSearchParams(window.location.search);
+        const num = urlParametro.get("numcontrol");
+        const id = urlParametro.get("encuestaId");
+        let numero = 1;
+
+        async function CargarEncuesta(id) {
+            try {
+                const response = await fetch(`https://localhost:44341/api/Aplicaciones?idEncuensta=${id}&num=${num}`);
+                if (!response.ok) {
+
+                    alert("Ya has conestado esta encuesta antes");
+                    window.location.href = `login_alumno.html?encuestaId=${id}`;
+                    return;
+                }
+
+                const data = await response.json();
+                titulo.textContent = "Encuesta: " + data.titulo;
+                const preguntas = data.lstPreguntas;
+
+                preguntas.forEach(x => {
+                    const div = document.createElement("div");
+                    div.classList.add("pregunta");
+
+                    const label = document.createElement("label");
+                    label.textContent = `${numero}. ${x.texto}`;
+                    div.appendChild(label);
+
+                    const opcionesDiv = document.createElement("div");
+                    opcionesDiv.className = "opciones";
+
+                    for (let i = 1; i <= 5; i++) {
+                        const opcion = document.createElement("label");
+                        opcion.className = "opcion";
+                        opcion.dataset.pregunta = x.id;
+                        opcion.dataset.valor = i;
+
+                        const input = document.createElement("input");
+                        input.type = "radio";
+                        input.name = `p${x.id}`;
+                        input.value = i;
+
+                        const texto = ["Muy Insatisfecho", "Insatisfecho", "Neutral", "Satisfecho", "Muy Satisfecho"][i - 1];
+
+                        opcion.innerHTML = `<input type="radio" name="p${x.id}" value="${i}">${texto}`;
+                        opcionesDiv.appendChild(opcion);
+
+                        // Comportamiento visual al seleccionar
+                        opcion.addEventListener("click", () => {
+                            opcionesDiv.querySelectorAll(".opcion").forEach(op => op.classList.remove("selected"));
+                            opcion.classList.add("selected");
+                        });
+                    }
+
+                    div.appendChild(opcionesDiv);
+                    divContenedor.appendChild(div);
+                    numero++;
+                });
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+
+        formulario.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const dto = {
+                encuestaid: id,
+                numcontrol: num,
+                respuestas: []
+            };
+
+            const seleccionadas = document.querySelectorAll("input[type='radio']:checked");
+            seleccionadas.forEach(input => {
+                const preguntaId = input.name.replace("p", "");
+                dto.respuestas.push({
+                    preguntaId: parseInt(preguntaId),
+                    valor: parseInt(input.value)
+                });
+            });
+
+            enviarRespuesta(dto);
+        });
+
+        async function enviarRespuesta(dto) {
+            try {
+                const res = await fetch("https://localhost:44341/api/aplicaciones/aplicar", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(dto)
+                });
+
+                if (res.ok) {
+                    alert("Respuestas enviadas correctamente.");
+                } else {
+                    alert("Error al enviar respuestas.");
+                }
+            } catch (error) {
+                alert("Error de red: " + error.message);
+            }
+        }
+
+        CargarEncuesta(id);
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:44341/hubs/encuestas")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.start()
+            .then(() => console.log("✅ Conectado el hub a la encuesta"))
+            .catch(err => console.error("❌ Error al conectar con el Hub:", err));
+
+    </script>
 </body>
 </html>

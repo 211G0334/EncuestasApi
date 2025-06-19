@@ -6,15 +6,139 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Crear Nueva Encuesta</h1>
-    <form class="formulario">
-        <label for="titulo">Título de la Encuesta:</label>
-        <input type="text" id="titulo" required>
+    <header class="navbar">
+        <div class="navbar-title">🎓 Encuestas Escolares</div>
+        <nav class="navbar-links">
+            <a href="dashboard.html">Panel</a>
+            <a href="crearencuesta.html">Crear Encuesta</a>
+            <a href="AplicarEncuesta.html">Aplicar Encuesta</a>
+            <a href="ResultadoEncuesta.html">Resultados</a>
+            <div class="user-actions">
+                <span id="nombreUser"></span>
+                <button class="logout-btn" id="exit">Salir</button>
+            </div>
+        </nav>
+    </header>
 
-        <label for="preguntas">Número de Preguntas:</label>
-        <input type="number" id="preguntas" min="1" max="10" required>
+    <div class="container">
+        <h3>+ Crear Nueva Encuesta</h3>
+        <p>Crea una encuesta personalizada con preguntas que se evaluarán en una escala del 1 al 5</p>
 
-        <button type="submit" class="btn">Crear</button>
-    </form>
+        <div class="form-group">
+            <label for="nombreEncuesta" class="form-label">Nombre de la Encuesta</label>
+            <input type="text" id="nombreEncuesta" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Preguntas / Observaciones</label>
+            <p class="text-muted">Todas las preguntas se evaluarán en una escala del 1 al 5</p>
+
+            <div id="preguntas">
+                <div class="input-group">
+                    <span>1</span>
+                    <input type="text" placeholder="Escriba su pregunta aquí..." />
+                    <button type="button" onclick="eliminarPregunta(this)">🗑️</button>
+                </div>
+            </div>
+
+            <button class="btn-add" id="btnPregunta">➕ Agregar Pregunta</button>
+            <div class="question-count" id="contadorPreguntas">Preguntas: 1 / 10</div>
+        </div>
+
+        <form id="formulario" class="form-actions">
+            <button class="btn-save" type="submit" id="btnEncuesta">📂 Guardar Encuesta</button>
+            <button class="btn-edit" type="button" id="btnEditar">✏️ Editar Encuesta</button>
+            <a class="btn-delete" href="eliminar_encuesta.html">🗑️ Eliminar Encuesta</a>
+        </form>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+        let preguntas = document.getElementById("preguntas");
+        let contador = document.getElementById("contadorPreguntas");
+        let nombreEncuesta = document.getElementById("nombreEncuesta");
+        let btnPregunta = document.getElementById("btnPregunta");
+        let formulario = document.getElementById("formulario");
+        let numero = 1;
+
+        function actualizarContador() {
+            contador.textContent = `Preguntas: ${numero} / 10`;
+        }
+
+        function eliminarPregunta(btn) {
+            btn.parentElement.remove();
+            numero--;
+            renumerarPreguntas();
+            actualizarContador();
+        }
+
+        function renumerarPreguntas() {
+            let spans = preguntas.querySelectorAll(".input-group span");
+            spans.forEach((span, i) => {
+                span.textContent = i + 1;
+            });
+        }
+
+        btnPregunta.addEventListener("click", () => {
+            if (numero >= 10) {
+                alert("El máximo son 10 preguntas");
+                return;
+            }
+            numero++;
+            const grupo = document.createElement("div");
+            grupo.className = "input-group";
+            grupo.innerHTML = `
+                    <span>${numero}</span>
+                    <input type="text" placeholder="Escriba su pregunta aquí...">
+                    <button type="button" onclick="eliminarPregunta(this)">🗑️</button>
+                `;
+            preguntas.appendChild(grupo);
+            actualizarContador();
+        });
+
+        formulario.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if (!nombreEncuesta.value.trim()) {
+                alert("Por favor, ingresa un nombre para la encuesta");
+                return;
+            }
+
+            let dto = {
+                titulo: nombreEncuesta.value,
+                lstPreguntas: [],
+            };
+
+            preguntas.querySelectorAll("input").forEach((input) => {
+                if (input.value.trim()) {
+                    dto.lstPreguntas.push({ texto: input.value });
+                }
+            });
+
+            if (dto.lstPreguntas.length === 0) {
+                alert("Debe de agregar al menos una pregunta");
+                return;
+            }
+
+            try {
+                let response = await fetch("https://localhost:44341/api/encuestas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token,
+                    },
+                    body: JSON.stringify(dto),
+                });
+                if (!response.ok) throw new Error("Error al crear encuesta");
+                alert("Encuesta guardada correctamente");
+                window.location.href = "dashboard.html";
+            } catch (errores) {
+                alert("Error: " + errores.message);
+            }
+        });
+
+        document.getElementById("btnEditar").addEventListener("click", () => {
+            window.location.href = "editar_encuesta.html";
+        });
+    </script>
 </body>
 </html>

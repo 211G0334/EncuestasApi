@@ -4,13 +4,111 @@
     <meta charset="UTF-8">
     <title>Panel de Control</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
 </head>
 <body>
-    <h1>Panel del Administrador</h1>
-    <div class="login-options">
-        <a href="crearencuesta.html" class="btn">Crear Encuesta</a>
-        <a href="ver_resultados.html" class="btn">Ver Resultados</a>
-        <a href="eliminar_encuesta.html" class="btn">Eliminar Encuesta</a>
-    </div>
+    <header class="navbar">
+        <div class="navbar-title">🎓 Encuestas Escolares</div>
+        <nav class="navbar-links">
+            <a href="dashboard.html">Panel</a>
+            <a href="crearencuesta.html">Crear Encuesta</a>
+            <a href="AplicarEncuesta.html">Aplicar Encuesta</a>
+            <a href="ResultadoEncuesta.html">Resultados</a>
+            <div class="user-actions">
+                <span id="nombreUser"></span>
+                <button class="logout-btn" id="exit">Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="dashboard">
+        <h1> Panel de Control</h1>
+        <div class="dashboard-cards">
+            <div class="card card-blue" id="encuestasCreadas">0<br><span>Encuestas Creadas</span></div>
+            <div class="card card-green" id="respuestasRecibidas">0<br><span>Respuestas Recibidas</span></div>
+            <div class="card card-yellow" id="entrevistadoresActivos">0<br><span>Entrevistadores Activos</span></div>
+            <div class="card card-cyan" id="estudiantesEncuestados">0<br><span>Estudiantes Encuestados</span></div>
+
+        </div>
+
+        <section class="survey-table">
+            <h2>Encuestas Disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Preguntas</th>
+                        <th>Creada por</th>
+                        <th>Fecha</th>
+
+                    </tr>
+                </thead>
+                <tbody id="tablaEncuestas">
+                    <tr><td colspan="6" class="empty">No hay encuestas disponibles</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="Script.js"></script>
+    <script>
+        async function cargardatos() {
+
+            try {
+                let response = await fetch("https://localhost:44341/api/Aplicaciones/mostarDashboard", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                if (response.ok) {
+                    let data = await response.json();
+                    console.log(data);
+
+                    document.getElementById("encuestasCreadas").innerHTML = `
+                        ${data.cantidadEncuestas}<br><span>Encuestas Creadas</span>`;
+                    document.getElementById("respuestasRecibidas").innerHTML = `
+                         ${data.respuestasRecibidas}<br><span>Respuestas Recibidas</span>`;
+                    document.getElementById("entrevistadoresActivos").innerHTML = `
+                        ${data.entrevistadoresActivos}<br><span>Entrevistadores Activos</span>`;
+                    document.getElementById("estudiantesEncuestados").innerHTML = `
+                        ${data.cantidadDeAlumnos}<br><span>Estudiantes Encuestados</span>`;
+
+                    const cuerpoTabla = document.getElementById("tablaEncuestas");
+                    cuerpoTabla.innerHTML = "";
+
+                    if (data.lstEncuestasDisponibles.length > 0) {
+                        data.lstEncuestasDisponibles.forEach(encuesta => {
+                            const fila = document.createElement("tr");
+
+                            const preguntasTexto = encuesta.lstPreguntaEncuesta && encuesta.lstPreguntaEncuesta.length > 0
+                                ? encuesta.lstPreguntaEncuesta.map(p => p.texto).join(", ")
+                                : "Sin preguntas";
+
+                            const fecha = new Date(encuesta.fechaCreacion);
+                            const usuarioCreador = encuesta.lstUsuarioCreador.map(u => u.nombre);
+                            fila.innerHTML = `
+        <td data-label="Título">${encuesta.titulo}</td>
+        <td data-label="Preguntas">${preguntasTexto}</td>
+        <td data-label="Creado por">${usuarioCreador}</td>
+        <td data-label="Fecha">${fecha.toLocaleDateString()}</td>`;
+
+                            cuerpoTabla.appendChild(fila);
+                        });
+                    } else {
+                        const filaVacia = document.createElement("tr");
+                        filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
+                        cuerpoTabla.appendChild(filaVacia);
+                    }
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+
+        }
+        cargardatos();
+    </script>
 </body>
 </html>

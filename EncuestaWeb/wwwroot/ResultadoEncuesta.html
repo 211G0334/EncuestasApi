@@ -6,11 +6,81 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Resultados Generales</h1>
-    <div class="resultados">
-        <!-- Resultados dinámicos aquí -->
-        <p>Pregunta 1: Promedio 4.2</p>
-        <p>Pregunta 2: Promedio 3.8</p>
+    <header class="navbar">
+        <div class="navbar-title">🎓 Encuestas Escolares</div>
+        <nav class="navbar-links">
+            <a href="dashboard.html">Panel</a>
+            <a href="crearencuesta.html">Crear Encuesta</a>
+            <a href="AplicarEncuesta.html">Aplicar Encuesta</a>
+            <a href="ResultadoEncuesta.html">Resultados</a>
+            <div class="user-actions">
+                <span id="nombreUser"></span>
+                <button class="logout-btn" id="exit">Salir</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h3>📊 Resultados de Encuestas</h3>
+        <p>Visualización de datos y respuestas recibidas</p>
+
+        <label for="seleccionarEncuesta">Seleccionar Encuesta</label>
+        <select id="seleccionarEncuesta">
+            <option selected disabled>Seleccione una encuesta para ver sus resultados...</option>
+        </select>
+
+        <button id="btnVerResultados">📈 Ver Resultados</button>
+
+        <button class="secondary-btn" onclick="location.href='resultados_alumno.html'">
+            👤 Ver Resultados por Alumno
+        </button>
     </div>
+
+    <script src="Script.js"></script>
+    <script>
+        const selector = document.getElementById("seleccionarEncuesta");
+        const btn = document.getElementById("btnVerResultados");
+
+        async function getEncuestas() {
+            try {
+                const response = await fetch("https://localhost:44341/api/encuestas/todas", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                const data = await response.json();
+                const elementos = data.lstEncuestas || data.lstEncusta;
+
+                elementos.forEach(x => {
+                    const option = document.createElement("option");
+                    option.value = x.id;
+                    option.text = x.titulo;
+                    selector.appendChild(option);
+                });
+            } catch (err) {
+                alert("Error al cargar encuestas: " + err.message);
+            }
+        }
+
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const id = selector.value;
+            if (!id || selector.selectedIndex === 0) {
+                alert("Por favor seleccione una encuesta.");
+                return;
+            }
+            window.location.href = `ver_resultados.html?encuestaId=${id}`;
+        });
+
+        document.getElementById("exit").addEventListener("click", () => {
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        });
+
+        getEncuestas();
+    </script>
 </body>
 </html>
