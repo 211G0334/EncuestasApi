@@ -2,7 +2,7 @@
 {
     public class EncuestaConRespDto
     {
-        public string NumeroConreol { get; set; }
+        public string NumeroConreol { get; set; } = null!;
         public int Id { get; set; }
         public string Titulo { get; set; } = "";
         public List<PreguntaRespuestaDTO> lstPreguntas { get; set; } = new List<PreguntaRespuestaDTO>();

@@ -12,11 +12,11 @@ namespace EncuestasApi.Controllers
     [ApiController]
     public class ResultadosController : ControllerBase
     {
-        private readonly Repository<Encuestasaplicadas> aplicacionRepos;
-        private readonly Repository<Alumnos> alumnoRepos;
-        private readonly Repository<Encuestas> encuestaRepos;
-        private readonly Repository<Preguntas> preguntaRepos;
-        private readonly Repository<Respuestas> respuestaRepos;
+        private readonly Repository<Encuestasaplicadas> _aplicacionRepos;
+        private readonly Repository<Alumnos> _alumnoRepos;
+        private readonly Repository<Encuestas> _encuestaRepos;
+        private readonly Repository<Preguntas> _preguntaRepos;
+        private readonly Repository<Respuestas> _respuestaRepos;
         public ResultadosController(
             Repository<Encuestasaplicadas> aplicacionRepos,
             Repository<Alumnos> alumnoRepos, Repository<Encuestas> encuestaRepos,
@@ -24,20 +24,20 @@ namespace EncuestasApi.Controllers
 
             )
         {
-            this.aplicacionRepos = aplicacionRepos;
-            this.alumnoRepos = alumnoRepos;
-            this.encuestaRepos = encuestaRepos;
-            this.preguntaRepos = preguntaRepos;
-            this.respuestaRepos = respuestaRepos;
+            _aplicacionRepos = aplicacionRepos;
+            _alumnoRepos = alumnoRepos;
+            _encuestaRepos = encuestaRepos;
+            _preguntaRepos = preguntaRepos;
+            _respuestaRepos = respuestaRepos;
         }
         [HttpGet]
         public IActionResult Get(int idEncuesta)
         {
-            var encuesta = encuestaRepos.Get(idEncuesta);
+            var encuesta = _encuestaRepos.Get(idEncuesta);
             if (encuesta == null) return NotFound();
 
-            var preguntas = preguntaRepos.GetAll().Where(p => p.EncuestaId == idEncuesta).ToList();
-            var respuestas = respuestaRepos.GetAll().Where(r => r.EncuestaId == idEncuesta).ToList();
+            var preguntas = _preguntaRepos.GetAll().Where(p => p.EncuestaId == idEncuesta).ToList();
+            var respuestas = _respuestaRepos.GetAll().Where(r => r.EncuestaId == idEncuesta).ToList();
 
             var resultado = new ResultadoEncuestaDto
             {
@@ -65,7 +65,7 @@ namespace EncuestasApi.Controllers
         public IActionResult GetEncuestaPorAlumno(string numerocontrol)
         {
 
-            var alumno = alumnoRepos.GetAll().FirstOrDefault(x => x.Nombre == numerocontrol);
+            var alumno = _alumnoRepos.GetAll().FirstOrDefault(x => x.Nombre == numerocontrol);
 
             if (alumno == null)
             {
@@ -82,20 +82,19 @@ namespace EncuestasApi.Controllers
 
             };
 
-            var aplicaciones = aplicacionRepos.GetAll().Where(x => x.AlumnoId == alumno.Id);
-            var respuestas = respuestaRepos.GetAll().ToList();
-            var preguntas = preguntaRepos.GetAll().ToList();
-            var encuestas = encuestaRepos.GetAll().ToList();
+            var aplicaciones = _aplicacionRepos.GetAll().Where(x => x.AlumnoId == alumno.Id);
+            var respuestas = _respuestaRepos.GetAll().ToList();
+            var preguntas = _preguntaRepos.GetAll().ToList();
+            var encuestas = _encuestaRepos.GetAll().ToList();
 
             var resultado = new List<EncuestaConRespDto>();
 
             foreach (var item in aplicaciones)
             {
                 var encuesta = encuestas.FirstOrDefault(e => e.Id == item.EncuestaId);
-
+                if (encuesta == null) { return BadRequest(); }
                 var preguntasEncuesta = preguntas.Where(p => p.EncuestaId == encuesta.Id).ToList();
 
-                //var r = respuestas.FirstOrDefault(r => r.EncuestaId == encuesta.Id && r.PreguntaId == preguntasEncuesta)?.Escala ?? 0;
                 var preguntaConRespuesta = preguntasEncuesta.Select(p =>
                 {
 
@@ -127,34 +126,33 @@ namespace EncuestasApi.Controllers
         public IActionResult GetPorEncuesta(int idEncuesta)
         {
 
-            var encuesta = encuestaRepos.Get(idEncuesta);
+            var encuesta = _encuestaRepos.Get(idEncuesta);
             if (encuesta == null) return NotFound();
 
             var interpretaciones = new Dictionary<int, string>
             {
-                { 1, "Muy satisfecho" },
-                { 2, "Satisfecho" },
-                { 3, "Neutral" },
-                { 4, "Insatisfecho" },
-                { 5, "Muy insatisfecho" }
+               { 1, "Excelente" },
+               { 2, "Bueno" },
+               { 3, "Regular" },
+               { 4, "Deficiente" },
+               { 5, "Muy deficiente" }
             };
 
-            var alumnos = alumnoRepos.GetAll();
-            var aplicaciones = aplicacionRepos.GetAll().Where(x => x.EncuestaId == encuesta.Id);
-            var respuestas = respuestaRepos.GetAll().ToList();
-            var preguntas = preguntaRepos.GetAll().ToList();
-            var encuestas = encuestaRepos.GetAll().ToList();
+            var alumnos = _alumnoRepos.GetAll();
+            var aplicaciones = _aplicacionRepos.GetAll().Where(x => x.EncuestaId == encuesta.Id);
+            var respuestas = _respuestaRepos.GetAll().ToList();
+            var preguntas = _preguntaRepos.GetAll().ToList();
+            var encuestas = _encuestaRepos.GetAll().ToList();
 
             var resultado = new List<EncuestaConRespDto>();
 
             foreach (var item in aplicaciones)
             {
-                var alumno = alumnos.FirstOrDefault(a => a.Id == item.AlumnoId);
 
                 var preguntasEncuesta = preguntas.Where(p => p.EncuestaId == encuesta.Id).ToList();
 
-                //var r = respuestas.FirstOrDefault(r => r.EncuestaId == encuesta.Id && r.PreguntaId == preguntasEncuesta)?.Escala ?? 0;
-                var preguntaConRespuesta = preguntasEncuesta.Select(p => {
+                var preguntaConRespuesta = preguntasEncuesta.Select(p =>
+                {
 
                     var r = respuestas.FirstOrDefault(r => r.EncuestaId == encuesta.Id && r.PreguntaId == p.Id);
                     var escala = r?.Escala ?? 0;
@@ -168,17 +166,23 @@ namespace EncuestasApi.Controllers
                         Respuesta = interpretacion
                     };
                 }).ToList();
-
-                resultado.Add(new EncuestaConRespDto
+                var alumno = alumnos.FirstOrDefault(a => a.Id == item.AlumnoId);
+                if (alumno != null)
                 {
-                    NumeroConreol = alumno.Nombre,
-                    Id = encuesta.Id,
-                    Titulo = encuesta.Titulo,
-                    lstPreguntas = preguntaConRespuesta
-                });
-            }
 
-            return Ok(resultado);
+                    resultado.Add(new EncuestaConRespDto
+                    {
+                        NumeroConreol = alumno.Nombre,
+                        Id = encuesta.Id,
+                        Titulo = encuesta.Titulo,
+                        lstPreguntas = preguntaConRespuesta
+                    });
+                }
+            }
+                    return Ok(resultado);
+
         }
+
     }
 }
+
