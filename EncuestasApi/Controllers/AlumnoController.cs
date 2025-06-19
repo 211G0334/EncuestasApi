@@ -29,7 +29,7 @@ namespace EncuestasApi.Controllers
         [HttpPost("login")]
         public IActionResult Login(AlumnoDto dto)
         {
-            var existe = repo.GetAll().FirstOrDefault(x => x.NumeroControl == dto.NumeroControl);
+            var existe = repo.GetAll().FirstOrDefault(x => x.NumeroControl == dto.NumeroControl && x.Nombre == dto.Nombre);
 
             if (existe != null)
             {

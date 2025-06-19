@@ -26,12 +26,7 @@
     <div class="container">
         <h3>👤 Resultados por Alumno</h3>
 
-        <label for="numControl">Buscar por nombre</label>
-        <input type="text" id="numControl" placeholder="Ejemplo: Peña Nieto" />
 
-        <button onclick="buscarPorAlumno()">🔍 Buscar</button>
-
-        <label for="encuestaSelect">O seleccionar una encuesta</label>
         <select id="encuestaSelect">
             <option disabled selected>Seleccione una encuesta...</option>
         </select>
@@ -48,7 +43,7 @@
 
         async function cargarEncuestas() {
             try {
-                const res = await fetch("https://localhost:44341/api/encuestas/todas", {
+                const res = await fetch("https://localhost:44341/api/encuesta/todas", {
                     headers: { Authorization: "Bearer " + token }
                 });
                 const data = await res.json();

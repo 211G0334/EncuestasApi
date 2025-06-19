@@ -8,6 +8,7 @@
 
 </head>
 <body>
+
     <div class="container">
 
         <form>
@@ -17,8 +18,8 @@
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button type="submit">Enviar Respuestas</button>
-                <button type="button" class="btn-cancelar" onclick="window.location.href='dashboard.html'">Cancelar</button>
+                <button type="submit" id="btnEnviar">Enviar Respuestas</button>
+                <button type="button" class="btn-cancelar" onclick="window.location.href='dashboard.html'">Volver/cancelar</button>
             </div>
         </form>
     </div>
@@ -39,7 +40,7 @@
                 if (!response.ok) {
 
                     alert("Ya has conestado esta encuesta antes");
-                    window.location.href = `login_alumno.html?encuestaId=${id}`;
+                    window.location.href = `AplicarEncuesta.html`;
                     return;
                 }
 
@@ -123,9 +124,11 @@
 
                 if (res.ok) {
                     alert("Respuestas enviadas correctamente.");
+                    document.getElementById("btnEnviar").remove(); // ← esta línea elimina el botón
                 } else {
                     alert("Error al enviar respuestas.");
                 }
+
             } catch (error) {
                 alert("Error de red: " + error.message);
             }

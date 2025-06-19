@@ -89,7 +89,7 @@ namespace EncuenstasAPI
             app.MapGet("/", () => "Solo para que se vea algo");
             app.MapControllers();
             app.UseStaticFiles();
-            app.MapHub<HubEncuesta>("/hubs/encuestas");
+            app.MapHub<HubEncuesta>("/hubs/encuesta");
 
             app.Run();
         }

@@ -39,7 +39,7 @@ cargarUsuario();
 // Inicializar conexión SignalR (solo si existe en la vista)
 if (window.signalR) {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("http://localhost:44341/hubs/encuestas", {
+        .withUrl("https://localhost:44341/hubs/encuesta", {
             accessTokenFactory: () => sessionStorage.getItem("token")
         })
         .withAutomaticReconnect()

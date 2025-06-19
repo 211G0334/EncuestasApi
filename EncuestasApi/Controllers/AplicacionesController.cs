@@ -120,9 +120,7 @@ namespace EncuestasApi.Controllers
         return Ok(nuevo);
     }
 
-    /*
-     * en esta parte yo voy a tener un metodo get que me va a traer las encuesta junto con las respuestas para ya aplicarla
-     */
+
 
 
     [HttpPost("aplicar")]

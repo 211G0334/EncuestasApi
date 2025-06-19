@@ -28,6 +28,14 @@
         <select id="seleccionarEncuesta">
             <option selected disabled>Seleccione una encuesta...</option>
         </select>
+        <div id="formAlumno">
+            <h3>Ingrese aluno que desea ser encuestado</h3>
+            <label>Nombre:</label>
+            <input type="text" id="nombreAlumno" required>
+            <label>Número de Control:</label>
+            <input type="text" id="numControlAlumno" required>
+            <button type="button" onclick="registrarAlumno()">Comenzar Encuesta</button>
+        </div>
 
         <button id="btnAplicar">▶ Iniciar Nueva Respuesta</button>
     </div>
@@ -37,9 +45,48 @@
         const lisEncuestas = document.getElementById("seleccionarEncuesta");
         const btn = document.getElementById("btnAplicar");
 
+        const formAlumno = document.getElementById("formAlumno");
+        const formEncuesta = document.getElementById("formEncuesta");
+
+        const nombreAlumno = document.getElementById("nombreAlumno");
+        const numControlAlumno = document.getElementById("numControlAlumno");
+
+        function registrarAlumno() {
+            const nombre = nombreAlumno.value.trim();
+            const numControl = numControlAlumno.value.trim();
+
+            if (!nombre || !numControl) {
+                alert("Por favor, ingresa nombre y número de control.");
+                return;
+            }
+
+            const dto = {
+                nombre: nombre,
+                numeroControl: numControl,
+                idEncuestas: id
+            };
+
+            fetch("https://localhost:44341/api/Alumno/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dto)
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Error al registrar o validar alumno");
+                    return res.json();
+                })
+                .then(data => {
+                    
+                    window.num = numControl;
+                    CargarEncuesta(id);
+                })
+                .catch(err => alert("Error: " + err.message));
+        }
+
+
         async function getEncuestas() {
             try {
-                const response = await fetch("https://localhost:44341/api/encuestas", {
+                const response = await fetch("https://localhost:44341/api/Encuesta/todas", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -68,8 +115,7 @@
                 alert("Por favor seleccione una encuesta.");
                 return;
             }
-
-            window.open(`login_alumno.html?encuestaId=${id}`, '_blank');
+            window.location.href = `responder_encuesta.html?encuestaId=${id}&numcontrol=${numControlAlumno.value}`;
         });
 
         getEncuestas();
