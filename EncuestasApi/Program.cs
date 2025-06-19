@@ -15,8 +15,33 @@ namespace EncuenstasAPI
     {
         public static void Main(string[] args)
         {
+
+
             var builder = WebApplication.CreateBuilder(args);
 
+
+            var cs = builder.Configuration.GetConnectionString("EncuentasCS");
+            builder.Services.AddDbContext<EncuestasContext>(x => x.UseMySql(cs, ServerVersion.AutoDetect(cs)));
+
+            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
+            builder.Services.AddScoped<UsuariosValidator>();
+            builder.Services.AddScoped<EncuestaValidator>();
+            builder.Services.AddTransient<JWTService>();
+            builder.Services.AddSignalR();
+
+            builder.Services.AddControllers();
+
+
+            builder.Services.AddCors(x =>
+            {
+                x.AddPolicy("todos", builder =>
+                {
+                    builder.WithOrigins("https://localhost:7019","http://localhost:5211")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod()
+                           .AllowCredentials();
+                });
+            });
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
@@ -52,37 +77,10 @@ namespace EncuenstasAPI
 
 
 
-            var cs = builder.Configuration.GetConnectionString("EncuentasCS");
-            builder.Services.AddDbContext<EncuestasContext>(x => x.UseMySql(cs, ServerVersion.AutoDetect(cs)));
-
-            builder.Services.AddScoped(typeof(Repository<>), typeof(Repository<>));
-            builder.Services.AddScoped<UsuariosValidator>();
-            builder.Services.AddScoped<EncuestaValidator>();
-            builder.Services.AddTransient<JWTService>();
-            builder.Services.AddSignalR();
-
-            builder.Services.AddControllers();
-
-          
-            builder.Services.AddCors(x =>
-            {
-                x.AddPolicy("todos", builder =>
-                {
-                    builder.WithOrigins("https://localhost:7016", "https://localhost:44384")
-                           .AllowAnyHeader()
-                           .AllowAnyMethod()
-                           .AllowCredentials();
-                });
-            });
-
-
-
 
             var app = builder.Build();
 
             app.UseCors("todos");
-
-            app.MapGet("/", () => "Hello World!");
 
             app.UseAuthentication();
             app.UseAuthorization();
