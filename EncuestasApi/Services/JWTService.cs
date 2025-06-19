@@ -17,7 +17,7 @@ namespace EncuestasApi.Services
             // Validar si la configuración es nula o si faltan claves esenciales
             var issuer = Configuration["Jwt:Issuer"];
             var audience = Configuration["Jwt:Audience"];
-            var key = Configuration?["Jwt:Key"];
+            var key = Configuration["Jwt:Key"];
 
             if (issuer == null || audience == null || key == null)
             {
