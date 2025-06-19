@@ -24,7 +24,7 @@ namespace EncuestasApi.Controllers
             this.repo = repo;
             this.service = service;
         }
-
+        //inicio para alumnos
 
         [HttpPost("login")]
         public IActionResult Login(AlumnoDto dto)
