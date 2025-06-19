@@ -36,7 +36,7 @@ namespace EncuenstasAPI
             {
                 x.AddPolicy("todos", builder =>
                 {
-                    builder.WithOrigins("https://localhost:7019","http://localhost:5211")
+                    builder.WithOrigins("https://localhost:7020", "http://localhost:44341")
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowCredentials();
