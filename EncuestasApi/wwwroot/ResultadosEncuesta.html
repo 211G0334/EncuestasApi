@@ -283,7 +283,7 @@ select:focus {
 
         async function getEncuestas() {
             try {
-                const response = await fetch("https://localhost:44341/api/encuesta/todas", {
+                const response = await fetch("https://foundmintdog32.conveyor.cloud/api/encuesta/todas", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -314,7 +314,7 @@ select:focus {
             }
 
             try {
-                const response = await fetch(`https://localhost:44341/api/resultados?idEncuesta=${id}`, {
+                const response = await fetch(`https://foundmintdog32.conveyor.cloud/api/resultados?idEncuesta=${id}`, {
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + token,

@@ -180,7 +180,7 @@ tr:hover {
 
 
 
-                let response = await fetch("https://localhost:44341/api/Aplicaciones/mostarDashboard", {
+                let response = await fetch("https://foundmintdog32.conveyor.cloud/api/Aplicaciones/mostarDashboard", {
                     method: "GET",
                     headers: {
 
@@ -221,7 +221,7 @@ tr:hover {
                                 if (!confirm("¿Estás seguro de eliminar esta encuesta?")) return;
 
                                 try {
-                                    const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
+                                    const res = await fetch(`https://foundmintdog32.conveyor.cloud/api/encuesta/${encuesta.id}`, {
                                         method: "DELETE",
                                         headers: {
                                             "Authorization": "Bearer " + sessionStorage.getItem("token"),

@@ -35,7 +35,7 @@ namespace EncuenstasAPI
             {
                 options.AddPolicy("PermitirTodo", policy =>
                 {
-                    policy.WithOrigins("https://localhost:44376") // Usa el puerto de tu frontend
+                    policy.WithOrigins("https://localhost:44376", "https://foundmintdog32.conveyor.cloud/") // Usa el puerto de tu frontend
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .AllowCredentials(); // necesario para usar tokens
@@ -88,9 +88,10 @@ namespace EncuenstasAPI
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            app.MapGet("/", () => "Solo para que se vea algo");
+            //app.MapGet("/", () => "Solo para que se vea algo");
             app.MapControllers();
             app.UseStaticFiles();
+            app.UseFileServer();
             app.MapHub<HubEncuesta>("/hubs/encuesta");
 
             app.Run();

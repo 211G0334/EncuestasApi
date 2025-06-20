@@ -39,7 +39,7 @@ cargarUsuario();
 // Inicializar conexión SignalR (solo si existe en la vista)
 if (window.signalR) {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("https://localhost:44341/hubs/encuesta", {
+        .withUrl("https://foundmintdog32.conveyor.cloud/hubs/encuesta", {
             accessTokenFactory: () => sessionStorage.getItem("token")
         })
         .withAutomaticReconnect()
@@ -95,7 +95,7 @@ if (window.signalR) {
                     if (!confirm("¿Estás seguro de eliminar esta encuesta?")) return;
 
                     try {
-                        const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
+                        const res = await fetch(`https://foundmintdog32.conveyor.cloud/api/encuesta/${encuesta.id}`, {
                             method: "DELETE",
                             headers: {
                                 "Authorization": "Bearer " + sessionStorage.getItem("token")

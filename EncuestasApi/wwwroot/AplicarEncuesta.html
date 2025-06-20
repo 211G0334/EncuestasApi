@@ -162,7 +162,7 @@
                 idEncuestas: id
             };
 
-            fetch("https://localhost:44341/api/Alumno/login", {
+            fetch("https://foundmintdog32.conveyor.cloud/api/Alumno/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(dto)
@@ -182,7 +182,7 @@
 
         async function getEncuestas() {
             try {
-                const response = await fetch("https://localhost:44341/api/Encuesta/todas", {
+                const response = await fetch("https://foundmintdog32.conveyor.cloud/api/Encuesta/todas", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

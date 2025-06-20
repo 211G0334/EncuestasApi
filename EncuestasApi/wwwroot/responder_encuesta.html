@@ -142,7 +142,7 @@
 
         async function CargarEncuesta(id) {
             try {
-                const response = await fetch(`https://localhost:44341/api/Aplicaciones?idEncuensta=${id}&num=${num}`);
+                const response = await fetch(`https://foundmintdog32.conveyor.cloud/api/Aplicaciones?idEncuensta=${id}&num=${num}`);
                 if (!response.ok) {
 
                     alert("Ya has conestado esta encuesta antes");
@@ -241,7 +241,7 @@
 
         async function enviarRespuesta(dto) {
             try {
-                const res = await fetch("https://localhost:44341/api/aplicaciones/aplicar", {
+                const res = await fetch("https://foundmintdog32.conveyor.cloud/api/aplicaciones/aplicar", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -271,7 +271,7 @@
         CargarEncuesta(id);
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:44341/hubs/encuestas")
+            .withUrl("https://foundmintdog32.conveyor.cloud/hubs/encuestas")
             .withAutomaticReconnect()
 
             .build();
