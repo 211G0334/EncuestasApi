@@ -69,7 +69,7 @@ if (window.signalR) {
                 el.innerHTML = `${tarjetas[id]}<br><span>${el.querySelector("span")?.textContent || ""}</span>`;
             }
         }
-
+        console.log("actualizado");
         // Actualizar tabla de encuestas
         const cuerpoTabla = document.getElementById("tablaEncuestas");
         if (cuerpoTabla) {
@@ -84,12 +84,9 @@ if (window.signalR) {
 
                     fila.innerHTML = `
                         <td>${encuesta.titulo}</td>
-                        <td>${preguntasTexto}</td>
-                        <td>?</td>
                         <td>${creador}</td>
                         <td>${fecha}</td>
-                        <td>🔍</td>
-                    `;
+                        <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
                     cuerpoTabla.appendChild(fila);
                 });
             } else {
