@@ -1,77 +1,146 @@
-﻿﻿body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #fff5f5;
-    color: #400000;
+/* Estilos comunes para todas las páginas */
+:root {
+    --primary-red: #e63946;
+    --dark-red: #d90429;
+    --primary-green: #2a9d8f;
+    --dark-green: #1d7874;
+    --tech-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    --light-gray: #f1faee;
+    --dark-gray: #1d3557;
+    --card-bg: rgba(29, 53, 87, 0.85);
+}
+
+* {
     margin: 0;
     padding: 0;
-    text-align: center;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1 {
-    color: #b30000;
-    margin-top: 50px;
+body {
+    background: var(--tech-gradient);
+    color: var(--light-gray);
+    min-height: 100vh;
 }
 
-.login-options {
-    margin-top: 30px;
+.navbar {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(42, 157, 143, 0.2);
 }
 
-.btn {
-    display: inline-block;
-    padding: 12px 24px;
-    margin: 10px;
-    background-color: #b30000;
-    color: white;
+.navbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--light-gray);
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.navbar-links a {
+    color: var(--light-gray);
     text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
+    transition: all 0.2s ease;
+    padding: 0.5rem 0;
+    position: relative;
 }
 
-    .btn:hover {
-        background-color: #800000;
-    }
-
-.formulario {
-    max-width: 400px;
-    margin: 30px auto;
-    background: #ffe6e6;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(128, 0, 0, 0.2);
+.navbar-links a:hover {
+    color: var(--primary-green);
 }
 
-    .formulario label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-        color: #800000;
-    }
-
-    .formulario input[type="text"],
-    .formulario input[type="password"],
-    .formulario input[type="email"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #b30000;
-        border-radius: 5px;
-        margin-bottom: 15px;
-    }
-
-    .formulario button {
-        width: 100%;
-    }
-
-.pregunta {
-    margin-bottom: 20px;
-    text-align: left;
+.navbar-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-green);
+    transition: width 0.3s ease;
 }
 
-    .pregunta p {
-        color: #800000;
-        font-weight: bold;
-    }
+.navbar-links a:hover::after {
+    width: 100%;
+}
 
-    .pregunta label {
-        margin-right: 10px;
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logout-btn {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: var(--dark-red);
+    transform: translateY(-1px);
+}
+
+.tech-decoration {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.tech-decoration::before,
+.tech-decoration::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(42, 157, 143, 0.1) 0%, transparent 70%);
+}
+
+.tech-decoration::before {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -100px;
+}
+
+.tech-decoration::after {
+    width: 200px;
+    height: 200px;
+    bottom: -50px;
+    left: -50px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 1rem;
     }
+    
+    .navbar-links {
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .user-actions {
+        margin-top: 1rem;
+    }
+}
