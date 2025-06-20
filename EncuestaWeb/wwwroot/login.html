@@ -14,16 +14,17 @@ body {
     padding: 20px;
 }
 
-.formulario {
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    padding: 2.5rem;
-    border-radius: 15px;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(42, 157, 143, 0.2);
-}
+    .formulario {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        display: grid;
+        padding: 2.5rem;
+        border-radius: 15px;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(42, 157, 143, 0.2);
+    }
 
 .formulario h1 {
     color: var(--light-gray);
@@ -70,15 +71,15 @@ body {
 }</style>
 </head>
 <body>
-    <h1>Ingreso/h1>
 
     <form class="formulario">
+    <h1>Ingreso</h1>
 
 
         <label class="form-label">Nombre:</label>
         <input id="nombre" type="text" placeholder="Ingresa el nombre" required>
         <label for="matricula">Contraseña:</label>
-        <input type="text" id="matricula" name="matricula" placeholder="Ingrese numero de control" required>
+        <input type="password" id="matricula" name="matricula" placeholder="Ingrese su contraseña" required>
 
 
         <button type="submit" class="btn">Ingresar</button>
