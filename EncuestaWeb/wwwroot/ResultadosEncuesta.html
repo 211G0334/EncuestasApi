@@ -6,6 +6,9 @@
     <title>Resultados de Encuestas</title>
     
     <style>
+        option{
+            color:#000;
+        }
 :root {
   --primary-red: #e63946;
   --dark-red: #d90429;
@@ -260,7 +263,6 @@ select:focus {
 
     <div class="container">
         <h3>Resultados de Encuestas</h3>
-        <p>Visualización de datos y respuestas recibidas</p>
 
         <label for="seleccionarEncuesta">Seleccionar Encuesta</label>
         <select id="seleccionarEncuesta">
@@ -350,7 +352,7 @@ function mostrarResultados(data) {
                 ${pregunta.opciones.map((o, i) => {
                     const valor = i + 1; // Valor 1 a 5
                     const comentario = comentarios[valor] || "";
-                    return `<li>$${comentario} ${o.porcentaje.toFixed(1)}%</li>`;
+                    return `<li>${comentario} ${o.porcentaje.toFixed(1)}%</li>`;
                 }).join("")}
             </ul>
             <hr/>
