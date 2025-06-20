@@ -6,8 +6,119 @@ Add commentMore actions
 
     <title>Crear Encuesta</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Estilos específicos para CrearEncuesta.html */
+.container {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 800px;
+    margin: 2rem auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(42, 157, 143, 0.2);
+}
 
+.form-group {
+    margin-bottom: 1.5rem;
+}
 
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--light-gray);
+    font-weight: 500;
+}
+
+.text-muted {
+    color: rgba(241, 250, 238, 0.7);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+#preguntas {
+    margin: 1.5rem 0;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.input-group span {
+    color: var(--light-gray);
+    font-weight: bold;
+    min-width: 20px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 10px;
+    background: rgba(241, 250, 238, 0.1);
+    border: none;
+    border-radius: 5px;
+    color: var(--light-gray);
+    border-left: 2px solid var(--primary-red);
+}
+
+.input-group button {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.input-group button:hover {
+    background: var(--dark-red);
+    transform: scale(1.1);
+}
+
+.btn-add {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+    background: var(--dark-green);
+    transform: translateY(-2px);
+}
+
+.question-count {
+    color: rgba(241, 250, 238, 0.7);
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.btn-save {
+    background: linear-gradient(45deg, var(--primary-green), var(--dark-green));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-save:hover {
+    background: linear-gradient(45deg, var(--dark-green), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(42, 157, 143, 0.3);
+}
+    </style>
 </head>
 <body>
 
