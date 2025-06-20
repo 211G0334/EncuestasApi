@@ -103,7 +103,7 @@ if (window.signalR) {
             respuestasRecibidas: dto.respuestasRecibidas,
             estudiantesEncuestados: dto.cantidadDeAlumnos
         };
-
+        console.log("Datos recibidos en tiempo real:", dto);
         for (let id in tarjetas) {
             const el = document.getElementById(id);
             if (el) {
