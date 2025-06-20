@@ -1,16 +1,321 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Control</title>
-    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-
-
+    <style>
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #d90429;
+            --primary-green: #2a9d8f;
+            --dark-green: #1d7874;
+            --primary-blue: #457b9d;
+            --primary-cyan: #48cae4;
+            --tech-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --light-gray: #f1faee;
+            --dark-gray: #1d3557;
+            --card-bg: rgba(29, 53, 87, 0.85);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: var(--tech-gradient);
+            color: var(--light-gray);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(29, 53, 87, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(42, 157, 143, 0.3);
+        }
+        
+        .navbar-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .navbar-links a {
+            color: var(--light-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+        
+        .navbar-links a:hover {
+            color: var(--primary-green);
+        }
+        
+        .navbar-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+        
+        .navbar-links a:hover::after {
+            width: 100%;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 1.5rem;
+        }
+        
+        .logout-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: var(--dark-red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(217, 4, 41, 0.3);
+        }
+        
+        .dashboard {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .dashboard h1 {
+            color: var(--light-gray);
+            font-size: 2.2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .dashboard h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--primary-green);
+            border-radius: 3px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-blue {
+            border-color: var(--primary-blue);
+        }
+        
+        .card-green {
+            border-color: var(--primary-green);
+        }
+        
+        .card-cyan {
+            border-color: var(--primary-cyan);
+        }
+        
+        .card span {
+            font-size: 1rem;
+            color: rgba(241, 250, 238, 0.8);
+        }
+        
+        .card br + span {
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+        
+        .survey-table {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(42, 157, 143, 0.2);
+        }
+        
+        .survey-table h2 {
+            color: var(--light-gray);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(241, 250, 238, 0.2);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(241, 250, 238, 0.1);
+        }
+        
+        th {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+        
+        tr:hover td {
+            background: rgba(241, 250, 238, 0.05);
+        }
+        
+        .empty {
+            text-align: center;
+            color: rgba(241, 250, 238, 0.6);
+            font-style: italic;
+            padding: 1rem;
+        }
+        
+        .btnEliminar {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--primary-red);
+            border: 1px solid var(--primary-red);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btnEliminar:hover {
+            background: rgba(230, 57, 70, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Efectos tecnológicos */
+        .tech-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .tech-decoration::before,
+        .tech-decoration::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(42, 157, 143, 0.1) 0%, transparent 70%);
+        }
+        
+        .tech-decoration::before {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .tech-decoration::after {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: -50px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .navbar-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .user-actions {
+                margin-left: 0;
+                margin-top: 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .dashboard {
+                padding: 0 1rem;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            th, td {
+                min-width: 120px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="tech-decoration"></div>
+    
     <header class="navbar">
-        <div class="navbar-title">🎓 Encuestas Escolares</div>
+        <div class="navbar-title">🎓 Encuestas </div>
         <nav class="navbar-links">
             <a href="dashboard.html">Panel</a>
             <a href="crearencuesta.html">Crear Encuesta</a>
@@ -22,13 +327,19 @@
             </div>
         </nav>
     </header>
+    
     <main class="dashboard">
-        <h1> Panel de Control</h1>
-        <div class="x">
-            <div class="card card-blue" id="encuestasCreadas">0<br><span>Encuestas creadas</span></div>
-            <div class="card card-green" id="respuestasRecibidas">0<br><span>Total de respuestas recibidas</span></div>
-            <div class="card card-cyan" id="estudiantesEncuestados">0<br><span>Total de estudiantes encuestados</span></div>
-
+        <h1>Panel de Control</h1>
+        <div class="stats-grid">
+            <div class="card card-blue" id="encuestasCreadas">
+                0<br><span>Encuestas creadas</span>
+            </div>
+            <div class="card card-green" id="respuestasRecibidas">
+                0<br><span>Total de respuestas recibidas</span>
+            </div>
+            <div class="card card-cyan" id="estudiantesEncuestados">
+                0<br><span>Total de estudiantes encuestados</span>
+            </div>
         </div>
 
         <section class="survey-table">
@@ -38,94 +349,144 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Creada por</th>
-                        <th>Fecha</th>      
-
+                        <th>Fecha</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tablaEncuestas">
-                    <tr><td colspan="6" class="empty">No hay encuestas disponibles</td></tr>
+                    <tr><td colspan="4" class="empty">Cargando encuestas...</td></tr>
                 </tbody>
             </table>
         </section>
     </main>
 
-    <script src="Script.js"></script>
     <script>
+        // Obtener token de sesión
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            window.location.href = "login.html";
+        }
+
+        // Mostrar nombre de usuario
+        document.getElementById("nombreUser").textContent = sessionStorage.getItem("username") || "Usuario";
+
+        // Configurar logout
+        document.getElementById("exit").addEventListener("click", () => {
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        });
+
         async function cargardatos() {
-            
             try {
+                // Mostrar estado de carga
+                document.getElementById("tablaEncuestas").innerHTML = `
+                    <tr><td colspan="4" class="empty">Cargando datos...</td></tr>
+                `;
+
                 let response = await fetch("https://localhost:44341/api/Aplicaciones/mostarDashboard", {
-                    method: "GET",
                     headers: {
+                        "Authorization": "Bearer " + token,
                         "Content-Type": "application/json"
                     }
                 });
 
-                if (response.ok) {
-                    let data = await response.json();
-                    console.log(data);
+                if (!response.ok) throw new Error("Error al cargar datos del dashboard");
 
-                    document.getElementById("encuestasCreadas").innerHTML = `
-                                    ${data.cantidadEncuestas}<br><span>Encuestas creadas</span>`;
-                    document.getElementById("respuestasRecibidas").innerHTML = `
-                                     ${data.respuestasRecibidas}<br><span>Total de respuestas recibidas</span>`;
-                   
-                    document.getElementById("estudiantesEncuestados").innerHTML = `
-                                    ${data.cantidadDeAlumnos}<br><span>Total de estudiantes encuestados</span>`;
+                let data = await response.json();
+                console.log("Datos del dashboard:", data);
 
-                    const cuerpoTabla = document.getElementById("tablaEncuestas");
-                    cuerpoTabla.innerHTML = "";
+                // Actualizar estadísticas
+                document.getElementById("encuestasCreadas").innerHTML = `
+                    ${data.cantidadEncuestas || 0}<br><span>Encuestas creadas</span>
+                `;
+                document.getElementById("respuestasRecibidas").innerHTML = `
+                    ${data.respuestasRecibidas || 0}<br><span>Total de respuestas recibidas</span>
+                `;
+                document.getElementById("estudiantesEncuestados").innerHTML = `
+                    ${data.cantidadDeAlumnos || 0}<br><span>Total de estudiantes encuestados</span>
+                `;
 
-                    if (data.lstEncuestasDisponibles.length > 0) {
-                        data.lstEncuestasDisponibles.forEach(encuesta => {
-                            const fila = document.createElement("tr");
+                // Actualizar tabla de encuestas
+                const cuerpoTabla = document.getElementById("tablaEncuestas");
+                cuerpoTabla.innerHTML = "";
 
+                if (data.lstEncuestasDisponibles && data.lstEncuestasDisponibles.length > 0) {
+                    data.lstEncuestasDisponibles.forEach(encuesta => {
+                        const fila = document.createElement("tr");
 
-                            const fecha = new Date(encuesta.fechaCreacion);
-                            const usuarioCreador = encuesta.lstUsuarioCreador.map(u => u.nombre);
-                            fila.innerHTML = `
-      <td data-label="Título">${encuesta.titulo}</td>
-      <td data-label="Creado por">${usuarioCreador}</td>
-      <td data-label="Fecha">${fecha.toLocaleDateString()}</td>
-      <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
+                        const fecha = new Date(encuesta.fechaCreacion);
+                        const usuarioCreador = encuesta.lstUsuarioCreador?.map(u => u.nombre)?.join(", ") || "Desconocido";
+                        
+                        fila.innerHTML = `
+                            <td data-label="Nombre">${encuesta.titulo || "Sin título"}</td>
+                            <td data-label="Creada por">${usuarioCreador}</td>
+                            <td data-label="Fecha">${fecha.toLocaleDateString()}</td>
+                            <td data-label="Acciones">
+                                <button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button>
+                            </td>
+                        `;
 
+                        // Agregar evento de eliminación
+                        fila.querySelector(".btnEliminar").addEventListener("click", async () => {
+                            if (!confirm("¿Estás seguro de eliminar esta encuesta? Esta acción no se puede deshacer.")) return;
 
-                            cuerpoTabla.appendChild(fila);
-                            fila.querySelector(".btnEliminar").addEventListener("click", async () => {
-                                if (!confirm("¿Estás seguro de eliminar esta encuesta?")) return;
+                            try {
+                                const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
+                                    method: "DELETE",
+                                    headers: {
+                                        "Authorization": "Bearer " + token,
+                                        "Content-Type": "application/json"
+                                    }
+                                });
 
-                                try {
-                                    const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
-                                        method: "DELETE",
-                                        headers: {
-                                            "Authorization": "Bearer " + sessionStorage.getItem("token"),
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify(data)
-                                    });
-
-                                    const mensaje = await res.text();
-
-                                    if (!res.ok) throw new Error(mensaje);
-                                    alert("✅ " + mensaje);
-                                    cargardatos(); // recarga la tabla
-                                } catch (err) {
-                                    alert("❌ " + err.message);
+                                if (!res.ok) {
+                                    const error = await res.text();
+                                    throw new Error(error || "Error al eliminar la encuesta");
                                 }
-                            });
 
+                                const mensaje = await res.text();
+                                alert(`✅ ${mensaje}`);
+                                cargardatos(); // Recargar los datos
+                            } catch (err) {
+                                alert(`❌ ${err.message}`);
+                                console.error("Error al eliminar encuesta:", err);
+                            }
                         });
-                    } else {
-                        const filaVacia = document.createElement("tr");
-                        filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
-                        cuerpoTabla.appendChild(filaVacia);
-                    }
+
+                        cuerpoTabla.appendChild(fila);
+                    });
+                } else {
+                    cuerpoTabla.innerHTML = `
+                        <tr><td colspan="4" class="empty">No hay encuestas disponibles</td></tr>
+                    `;
                 }
             } catch (err) {
-                alert("Error: " + err.message);
+                console.error("Error al cargar datos:", err);
+                document.getElementById("tablaEncuestas").innerHTML = `
+                    <tr><td colspan="4" style="color: var(--primary-red); text-align: center; padding: 1rem;">
+                        Error al cargar los datos: ${err.message}
+                    </td></tr>
+                `;
             }
-
         }
+
+        // Conexión SignalR para actualizaciones en tiempo real
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("https://localhost:44341/hubs/dashboard")
+            .withAutomaticReconnect()
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("ActualizarDashboard", () => {
+            console.log("Recibida actualización del dashboard");
+            cargardatos();
+        });
+
+        connection.start()
+            .then(() => console.log("Conectado al Hub de Dashboard"))
+            .catch(err => console.error("Error al conectar con el Hub:", err));
+
+        // Cargar datos al iniciar
         cargardatos();
     </script>
 </body>
