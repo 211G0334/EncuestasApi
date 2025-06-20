@@ -1,32 +1,241 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Alumno</title>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #d90429;
+            --primary-green: #2a9d8f;
+            --dark-green: #1d7874;
+            --tech-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --light-gray: #f1faee;
+            --dark-gray: #1d3557;
+            --card-bg: rgba(29, 53, 87, 0.85);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--tech-gradient);
+            color: var(--light-gray);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .formulario {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(42, 157, 143, 0.2), inset 0 0 10px rgba(230, 57, 70, 0.1);
+            border: 1px solid rgba(42, 157, 143, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .formulario:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(42, 157, 143, 0.3), inset 0 0 15px rgba(230, 57, 70, 0.2);
+            }
+
+        h1 {
+            color: var(--light-gray);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(42, 157, 143, 0.5);
+            position: relative;
+        }
+
+            h1::after {
+                content: '';
+                display: block;
+                width: 60px;
+                height: 3px;
+                background: var(--primary-green);
+                margin: 10px auto;
+                border-radius: 2px;
+            }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light-gray);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: rgba(241, 250, 238, 0.1);
+            color: var(--light-gray);
+            font-size: 1rem;
+            border-left: 3px solid var(--primary-red);
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+            input:focus {
+                outline: none;
+                background: rgba(241, 250, 238, 0.15);
+                border-left: 3px solid var(--primary-green);
+                box-shadow: 0 0 10px rgba(42, 157, 143, 0.3);
+            }
+
+            input::placeholder {
+                color: rgba(241, 250, 238, 0.6);
+            }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--primary-green), var(--dark-green));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+            .btn:hover {
+                background: linear-gradient(45deg, var(--dark-green), var(--primary-green));
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(42, 157, 143, 0.3);
+            }
+
+            .btn:active {
+                transform: translateY(0);
+            }
+
+        /* Efectos tecnológicos */
+        .tech-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+            .tech-decoration::before,
+            .tech-decoration::after {
+                content: '';
+                position: absolute;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(42, 157, 143, 0.1) 0%, transparent 70%);
+            }
+
+            .tech-decoration::before {
+                width: 300px;
+                height: 300px;
+                top: -100px;
+                right: -100px;
+            }
+
+            .tech-decoration::after {
+                width: 200px;
+                height: 200px;
+                bottom: -50px;
+                left: -50px;
+            }
+
+        /* Mensaje de éxito */
+        .success-message {
+            display: none;
+            background: rgba(42, 157, 143, 0.2);
+            border: 1px solid var(--primary-green);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .formulario {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="tech-decoration"></div>
+
     <form id="registroForm" class="formulario">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" required>
+        <h1>Registro de Alumno</h1>
+
+        <label for="nombre">Nombre Completo:</label>
+        <input type="text" id="nombre" required placeholder="Ingrese su nombre completo">
 
         <label for="matricula">Número de Control:</label>
-        <input type="text" id="matricula" required>
+        <input type="text" id="matricula" required placeholder="Ingrese su número de control">
 
         <button type="submit" class="btn">Registrarse</button>
+
+        <div id="successMessage" class="success-message">
+            ¡Registro exitoso! Redireccionando...
+        </div>
     </form>
 
     <script>
         const formRegistro = document.getElementById("registroForm");
         const inputNombre = document.getElementById("nombre");
         const inputMatricula = document.getElementById("matricula");
+        const successMessage = document.getElementById("successMessage");
 
         formRegistro.addEventListener("submit", async function (e) {
             e.preventDefault();
 
+            // Validación básica
+            if (!inputNombre.value.trim() || !inputMatricula.value.trim()) {
+                alert("Por favor complete todos los campos");
+                return;
+            }
+
             const dto = {
-                nombre: inputNombre.value,
-                contraseña: inputMatricula.value  // se manda como "contraseña"
+                nombre: inputNombre.value.trim(),
+                contraseña: inputMatricula.value.trim()  // se manda como "contraseña"
             };
 
             try {
@@ -40,24 +249,29 @@
 
                 if (response.ok) {
                     const data = await response.json();
+
+                    // Mostrar mensaje de éxito
+                    successMessage.style.display = "block";
+                    formRegistro.reset();
+
                     if (data.token) {
                         sessionStorage.setItem("token", data.token); // Guardar token
-                        window.location.href = "dashboard.html";
+
+                        // Redireccionar después de 2 segundos
+                        setTimeout(() => {
+                            window.location.href = "dashboard.html";
+                        }, 2000);
                     } else {
-                        alert("Registro correcto, pero no se recibió el token.");
+                        successMessage.textContent = "Registro exitoso, pero no se recibió token";
                     }
                 } else {
                     const error = await response.text();
-                    alert(error);
+                    alert(error || "Error en el registro");
                 }
-
-
-
             } catch (error) {
                 alert("Error de red o servidor: " + error.message);
             }
         });
     </script>
-
 </body>
 </html>
