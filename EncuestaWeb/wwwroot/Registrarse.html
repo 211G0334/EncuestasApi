@@ -219,59 +219,57 @@
     </form>
 
     <script>
-        const formRegistro = document.getElementById("registroForm");
-        const inputNombre = document.getElementById("nombre");
-        const inputMatricula = document.getElementById("matricula");
-        const successMessage = document.getElementById("successMessage");
 
-        formRegistro.addEventListener("submit", async function (e) {
-            e.preventDefault();
+            const formRegistro = document.getElementById("registroForm");
+            const inputNombre = document.getElementById("nombre");
+            const inputMatricula = document.getElementById("matricula");
 
-            // Validación básica
-            if (!inputNombre.value.trim() || !inputMatricula.value.trim()) {
-                alert("Por favor complete todos los campos");
-                return;
-            }
 
-            const dto = {
-                nombre: inputNombre.value.trim(),
-                contraseña: inputMatricula.value.trim()  // se manda como "contraseña"
-            };
+            formRegistro.addEventListener("submit", async function (e) {
+                e.preventDefault();
 
-            try {
-                let response = await fetch("https://localhost:44341/api/Usuario/registro", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(dto)
-                });
+                const dto = {
+                    nombre: inputNombre.value,
+                    contraseña: inputMatricula.value  // se manda como "contraseña"
+                };
 
-                if (response.ok) {
-                    const data = await response.json();
+                try {
+                    let response = await fetch("https://localhost:44341/api/Usuario/registro", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(dto)
+                    });
 
-                    // Mostrar mensaje de éxito
-                    successMessage.style.display = "block";
-                    formRegistro.reset();
+                    if (response.ok) {
+                        const data = await response.json();
 
-                    if (data.token) {
-                        sessionStorage.setItem("token", data.token); // Guardar token
 
-                        // Redireccionar después de 2 segundos
-                        setTimeout(() => {
+
+
+
+                        if (data.token) {
+                            sessionStorage.setItem("token", data.token); // Guardar token
                             window.location.href = "dashboard.html";
-                        }, 2000);
+
+
+
+
+                        } else {
+                            alert("Registro correcto, pero no se recibió el token.");
+                        }
                     } else {
-                        successMessage.textContent = "Registro exitoso, pero no se recibió token";
+                        const error = await response.text();
+                        alert(error);
                     }
-                } else {
-                    const error = await response.text();
-                    alert(error || "Error en el registro");
+
+
+
+                } catch (error) {
+                    alert("Error de red o servidor: " + error.message);
                 }
-            } catch (error) {
-                alert("Error de red o servidor: " + error.message);
-            }
-        });
+            });
     </script>
 </body>
 </html>

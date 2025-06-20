@@ -54,52 +54,9 @@ if (window.signalR) {
 
 
 
-    //connection.on("RespuestasRecibidas", (dto) => {
-    //    console.log("Datos recibidos en tiempo real:", dto);
-
-    //    const tarjetas = {
-    //        encuestasCreadas: dto.cantidadEncuestas,
-    //        respuestasRecibidas: dto.respuestasRecibidas,
-    //        estudiantesEncuestados: dto.cantidadDeAlumnos
-    //    };
-
-    //    for (let id in tarjetas) {
-    //        const el = document.getElementById(id);
-    //        if (el) {
-    //            el.innerHTML = `${tarjetas[id]}<br><span>${el.querySelector("span")?.textContent || ""}</span>`;
-    //        }
-    //    }
-    //    console.log("actualizado");
-    //    // Actualizar tabla de encuestas
-    //    const cuerpoTabla = document.getElementById("tablaEncuestas");
-    //    if (cuerpoTabla) {
-    //        cuerpoTabla.innerHTML = "";
-
-    //        if (dto.lstEncuestasDisponibles.length > 0) {
-    //            dto.lstEncuestasDisponibles.forEach(encuesta => {
-    //                const fila = document.createElement("tr");
-    //                const preguntasTexto = encuesta.lstPreguntaEncuesta?.map(p => p.texto).join(", ") || "Sin preguntas";
-    //                const fecha = new Date(encuesta.fechaCreacion).toLocaleDateString();
-    //                const creador = encuesta.lstUsuarioCreador?.map(u => u.nombre).join(", ") || "Desconocido";
-
-    //                fila.innerHTML = `
-    //                    <td>${encuesta.titulo}</td>
-    //                    <td>${creador}</td>
-    //                    <td>${fecha}</td>
-    //                    <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
-    //                cuerpoTabla.appendChild(fila);
-    //            });
-    //        } else {
-    //            const filaVacia = document.createElement("tr");
-    //            filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
-    //            cuerpoTabla.appendChild(filaVacia);
-    //        }
-    //    }
-    //});
-
     function actualizarVistaConDatos(dto) {
         const tarjetas = {
-            encuestasCreadas: dto.cantidadEncuestas,
+           
             respuestasRecibidas: dto.respuestasRecibidas,
             estudiantesEncuestados: dto.cantidadDeAlumnos
         };

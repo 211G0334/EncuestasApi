@@ -1,0 +1,77 @@
+﻿﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff5f5;
+    color: #400000;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    color: #b30000;
+    margin-top: 50px;
+}
+
+.login-options {
+    margin-top: 30px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px;
+    background-color: #b30000;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+    .btn:hover {
+        background-color: #800000;
+    }
+
+.formulario {
+    max-width: 400px;
+    margin: 30px auto;
+    background: #ffe6e6;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(128, 0, 0, 0.2);
+}
+
+    .formulario label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #800000;
+    }
+
+    .formulario input[type="text"],
+    .formulario input[type="password"],
+    .formulario input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #b30000;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .formulario button {
+        width: 100%;
+    }
+
+.pregunta {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+    .pregunta p {
+        color: #800000;
+        font-weight: bold;
+    }
+
+    .pregunta label {
+        margin-right: 10px;
+    }
