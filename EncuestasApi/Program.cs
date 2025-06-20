@@ -35,10 +35,12 @@ namespace EncuenstasAPI
             {
                 options.AddPolicy("PermitirTodo", policy =>
                 {
-                    policy.AllowAnyOrigin()
+                    policy.WithOrigins("https://localhost:44376") // Usa el puerto de tu frontend
                           .AllowAnyMethod()
-                          .AllowAnyHeader();
+                          .AllowAnyHeader()
+                          .AllowCredentials(); // necesario para usar tokens
                 });
+
             });
 
            
@@ -66,7 +68,7 @@ namespace EncuenstasAPI
 
                         // Solo para conexiones al hub
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/encuestas"))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/encuesta"))
                         {
                             context.Token = accessToken;
                         }

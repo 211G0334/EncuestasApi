@@ -1,10 +1,12 @@
-﻿using EncuestasApi.Models.Dtos;
+﻿using EncuestasApi.Hubs;
+using EncuestasApi.Models.Dtos;
 using EncuestasApi.Models.Entities;
 using EncuestasApi.Models.Validations;
 using EncuestasApi.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel.DataAnnotations;
 
 namespace EncuestasApi.Controllers
@@ -14,6 +16,8 @@ namespace EncuestasApi.Controllers
     [ApiController]
     public class EncuestaController : ControllerBase
     {
+
+        private readonly IHubContext<HubEncuesta> _hubContext;
         private readonly Repository<Encuestas> repository;
         private readonly Repository<Preguntas> preguntasRepository;
         private readonly EncuestaValidator valitador;

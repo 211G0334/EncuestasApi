@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Panel de Control</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
 
 </head>
 <body>
@@ -23,7 +24,7 @@
     </header>
     <main class="dashboard">
         <h1> Panel de Control</h1>
-        <div class="dashboard-cards">
+        <div class="x">
             <div class="card card-blue" id="encuestasCreadas">0<br><span>Encuestas creadas</span></div>
             <div class="card card-green" id="respuestasRecibidas">0<br><span>Total de respuestas recibidas</span></div>
             <div class="card card-cyan" id="estudiantesEncuestados">0<br><span>Total de estudiantes encuestados</span></div>
@@ -36,9 +37,8 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Preguntas</th>
                         <th>Creada por</th>
-                        <th>Fecha</th>
+                        <th>Fecha</th>      
 
                     </tr>
                 </thead>
@@ -52,7 +52,7 @@
     <script src="Script.js"></script>
     <script>
         async function cargardatos() {
-
+            
             try {
                 let response = await fetch("https://localhost:44341/api/Aplicaciones/mostarDashboard", {
                     method: "GET",
@@ -80,15 +80,11 @@
                         data.lstEncuestasDisponibles.forEach(encuesta => {
                             const fila = document.createElement("tr");
 
-                            const preguntasTexto = encuesta.lstPreguntaEncuesta && encuesta.lstPreguntaEncuesta.length > 0
-                                ? encuesta.lstPreguntaEncuesta.map(p => p.texto).join(", ")
-                                : "Sin preguntas";
 
                             const fecha = new Date(encuesta.fechaCreacion);
                             const usuarioCreador = encuesta.lstUsuarioCreador.map(u => u.nombre);
                             fila.innerHTML = `
       <td data-label="Título">${encuesta.titulo}</td>
-      <td data-label="Preguntas">${preguntasTexto}</td>
       <td data-label="Creado por">${usuarioCreador}</td>
       <td data-label="Fecha">${fecha.toLocaleDateString()}</td>
       <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
@@ -103,7 +99,9 @@
                                         method: "DELETE",
                                         headers: {
                                             "Authorization": "Bearer " + sessionStorage.getItem("token"),
+                                            "Content-Type": "application/json"
                                         },
+                                        body: JSON.stringify(data)
                                     });
 
                                     const mensaje = await res.text();
