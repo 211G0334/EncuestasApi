@@ -5,7 +5,69 @@
     <meta charset="UTF-8">
     <title>Login Alumno</title>
     <link rel="stylesheet" href="css/style.css">
+<style>/* Estilos específicos para login_alumno.html */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
 
+.formulario {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(42, 157, 143, 0.2);
+}
+
+.formulario h1 {
+    color: var(--light-gray);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.formulario h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-green);
+    margin: 10px auto;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--light-gray);
+    font-weight: 500;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(45deg, var(--primary-green), var(--dark-green));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1.5rem;
+}
+
+.btn:hover {
+    background: linear-gradient(45deg, var(--dark-green), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(42, 157, 143, 0.3);
+}</style>
 </head>
 <body>
     <h1>Ingreso de Alumno</h1>
