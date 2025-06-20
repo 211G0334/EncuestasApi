@@ -6,136 +6,241 @@
     <title>Resultados de Encuestas</title>
     
     <style>
-        :root {
-            --primary-green: #2a9d8f;
-            --primary-red: #e63946;
-            --dark-red: #c1121f;
-            --light-gray: #f1faee;
-            --card-bg: rgba(29, 53, 87, 0.6);
-        }
+:root {
+  --primary-red: #e63946;
+  --dark-red: #d90429;
+  --primary-green: #2a9d8f;
+  --dark-green: #1d7874;
+  --tech-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  --light-gray: #f1faee;
+  --dark-gray: #1d3557;
+  --card-bg: rgba(29, 53, 87, 0.85);
+}
 
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f1c2e;
-            color: var(--light-gray);
-        }
+body {
+  background: var(--tech-gradient);
+  color: var(--light-gray);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        .navbar {
-            background: rgba(29, 53, 87, 0.9);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+.navbar {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(42, 157, 143, 0.2);
+}
 
-        .navbar-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
+.navbar-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--light-gray);
+}
 
-        .navbar-links a {
-            color: var(--light-gray);
-            margin-left: 1rem;
-            text-decoration: none;
-        }
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
 
-            .navbar-links a:hover {
-                color: var(--primary-green);
-            }
+.navbar-links a {
+  color: var(--light-gray);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
 
-        .user-actions {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.navbar-links a:hover {
+  color: var(--primary-green);
+}
 
-        .logout-btn {
-            background: var(--primary-red);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-            .logout-btn:hover {
-                background: var(--dark-red);
-            }
+.logout-btn {
+  background: var(--primary-red);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(42, 157, 143, 0.2);
-        }
+.logout-btn:hover {
+  background: var(--dark-red);
+}
 
-            .container h3 {
-                text-align: center;
-                margin-bottom: 1rem;
-            }
+.container {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 900px;
+  margin: 2rem auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(42, 157, 143, 0.2);
+}
 
-        label, select, button {
-            display: block;
-            margin-top: 1rem;
-            width: 100%;
-        }
+.container h3 {
+  color: var(--light-gray);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  position: relative;
+}
 
-        select {
-            padding: 0.5rem;
-            border-radius: 5px;
-            border: none;
-        }
+.container h3::after {
+  content: '';
+  display: block;
+  width: 70px;
+  height: 3px;
+  background: var(--primary-green);
+  margin: 10px 0;
+}
 
-        #btnVerResultados {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: var(--primary-green);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.container p {
+  color: rgba(241, 250, 238, 0.8);
+  margin-bottom: 1.5rem;
+}
 
-            #btnVerResultados:hover {
-                background: #21867a;
-            }
+select {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 1rem 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(241, 250, 238, 0.1);
+  color: var(--light-gray);
+  font-size: 1rem;
+  border-left: 3px solid var(--primary-red);
+  transition: all 0.3s ease;
+}
 
-        #resultadosEncuesta {
-            margin-top: 2rem;
-        }
+select:focus {
+  outline: none;
+  background: rgba(241, 250, 238, 0.15);
+  border-left: 3px solid var(--primary-green);
+}
 
-            #resultadosEncuesta h4 {
-                text-align: center;
-                color: var(--primary-green);
-                margin-bottom: 1rem;
-            }
+#btnVerResultados {
+  background: linear-gradient(45deg, var(--primary-green), var(--dark-green));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 1rem 0;
+  width: 100%;
+}
 
-            #resultadosEncuesta div {
-                background: rgba(255,255,255,0.05);
-                padding: 1rem;
-                border-radius: 10px;
-                margin-bottom: 1rem;
-            }
+#btnVerResultados:hover {
+  background: linear-gradient(45deg, var(--dark-green), var(--primary-green));
+  transform: translateY(-2px);
+}
 
-            #resultadosEncuesta ul {
-                list-style: none;
-                padding-left: 0;
-            }
+#resultadosEncuesta {
+  margin-top: 2rem;
+  background: rgba(29, 53, 87, 0.6);
+  padding: 1.5rem;
+  border-radius: 10px;
+  border-left: 3px solid var(--primary-red);
+}
 
-            #resultadosEncuesta li {
-                padding: 4px 0;
-                border-bottom: 1px solid rgba(255,255,255,0.1);
-            }
+#resultadosEncuesta h4 {
+  color: var(--light-gray);
+  margin-bottom: 1.5rem;
+  font-size: 1.4rem;
+  text-align: center;
+}
 
+#resultadosEncuesta div {
+  margin-bottom: 1.5rem;
+}
+
+#resultadosEncuesta p {
+  color: var(--light-gray);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+#resultadosEncuesta ul {
+  list-style-type: none;
+}
+
+#resultadosEncuesta li {
+  margin-bottom: 0.5rem;
+  padding: 8px 12px;
+  background: rgba(241, 250, 238, 0.05);
+  border-radius: 5px;
+}
+
+#resultadosEncuesta hr {
+  border: none;
+  height: 1px;
+  background: rgba(241, 250, 238, 0.1);
+  margin: 1.5rem 0;
+}
+
+.tech-decoration {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.tech-decoration::before,
+.tech-decoration::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(42, 157, 143, 0.1) 0%, transparent 70%);
+}
+
+.tech-decoration::before {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  right: -100px;
+}
+
+.tech-decoration::after {
+  width: 200px;
+  height: 200px;
+  bottom: -50px;
+  left: -50px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .navbar-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  .container {
+    padding: 1.5rem;
+  }
+}
     </style>
 </head>
 <body>
