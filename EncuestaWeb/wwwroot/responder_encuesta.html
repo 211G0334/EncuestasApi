@@ -7,9 +7,106 @@ More actions
     <title>Responder Encuesta</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<style>/* Estilos específicos para responder_encuesta.html */
+.container {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 15px;
+    max-width: 800px;
+    margin: 2rem auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(42, 157, 143, 0.2);
+}
 
+.container h3 {
+    color: var(--light-gray);
+    margin-bottom: 1.5rem;
+    position: relative;
+}
 
+.container h3::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-green);
+    margin: 10px 0;
+}
 
+.pregunta {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(241, 250, 238, 0.1);
+}
+
+.pregunta label {
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--light-gray);
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.opcion {
+    background: rgba(241, 250, 238, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(241, 250, 238, 0.2);
+}
+
+.opcion:hover {
+    background: rgba(42, 157, 143, 0.2);
+}
+
+.opcion.selected {
+    background: var(--primary-green);
+    color: white;
+}
+
+.opcion input {
+    display: none;
+}
+
+#btnEnviar {
+    background: linear-gradient(45deg, var(--primary-green), var(--dark-green));
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+#btnEnviar:hover {
+    background: linear-gradient(45deg, var(--dark-green), var(--primary-green));
+    transform: translateY(-2px);
+}
+
+.btn-cancelar {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-cancelar:hover {
+    background: var(--dark-red);
+    transform: translateY(-2px);
+}</style>
 </head>
 <body>
 
