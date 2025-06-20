@@ -31,10 +31,12 @@ namespace EncuestasApi.Hubs
             Clients.All.SendAsync("updateCount", Count);
             return Task.CompletedTask;
         }
+        
 
         public async Task MandarAplicacion(EncuestaAplicadaDto dto)
         {
-            await Clients.All.SendAsync("Recibir aplicación", dto);
+            await Clients.All.SendAsync("RespuestasRecibidas", dto);
+
         }
     }
 }

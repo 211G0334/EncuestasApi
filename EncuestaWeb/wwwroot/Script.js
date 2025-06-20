@@ -54,9 +54,50 @@ if (window.signalR) {
 
 
 
-    connection.on("RespuestasRecibidas", (dto) => {
-        console.log("Datos recibidos en tiempo real:", dto);
+    //connection.on("RespuestasRecibidas", (dto) => {
+    //    console.log("Datos recibidos en tiempo real:", dto);
 
+    //    const tarjetas = {
+    //        encuestasCreadas: dto.cantidadEncuestas,
+    //        respuestasRecibidas: dto.respuestasRecibidas,
+    //        estudiantesEncuestados: dto.cantidadDeAlumnos
+    //    };
+
+    //    for (let id in tarjetas) {
+    //        const el = document.getElementById(id);
+    //        if (el) {
+    //            el.innerHTML = `${tarjetas[id]}<br><span>${el.querySelector("span")?.textContent || ""}</span>`;
+    //        }
+    //    }
+    //    console.log("actualizado");
+    //    // Actualizar tabla de encuestas
+    //    const cuerpoTabla = document.getElementById("tablaEncuestas");
+    //    if (cuerpoTabla) {
+    //        cuerpoTabla.innerHTML = "";
+
+    //        if (dto.lstEncuestasDisponibles.length > 0) {
+    //            dto.lstEncuestasDisponibles.forEach(encuesta => {
+    //                const fila = document.createElement("tr");
+    //                const preguntasTexto = encuesta.lstPreguntaEncuesta?.map(p => p.texto).join(", ") || "Sin preguntas";
+    //                const fecha = new Date(encuesta.fechaCreacion).toLocaleDateString();
+    //                const creador = encuesta.lstUsuarioCreador?.map(u => u.nombre).join(", ") || "Desconocido";
+
+    //                fila.innerHTML = `
+    //                    <td>${encuesta.titulo}</td>
+    //                    <td>${creador}</td>
+    //                    <td>${fecha}</td>
+    //                    <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
+    //                cuerpoTabla.appendChild(fila);
+    //            });
+    //        } else {
+    //            const filaVacia = document.createElement("tr");
+    //            filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
+    //            cuerpoTabla.appendChild(filaVacia);
+    //        }
+    //    }
+    //});
+
+    function actualizarVistaConDatos(dto) {
         const tarjetas = {
             encuestasCreadas: dto.cantidadEncuestas,
             respuestasRecibidas: dto.respuestasRecibidas,
@@ -69,33 +110,62 @@ if (window.signalR) {
                 el.innerHTML = `${tarjetas[id]}<br><span>${el.querySelector("span")?.textContent || ""}</span>`;
             }
         }
-        console.log("actualizado");
-        // Actualizar tabla de encuestas
+
         const cuerpoTabla = document.getElementById("tablaEncuestas");
-        if (cuerpoTabla) {
-            cuerpoTabla.innerHTML = "";
+        if (!cuerpoTabla) return;
 
-            if (dto.lstEncuestasDisponibles.length > 0) {
-                dto.lstEncuestasDisponibles.forEach(encuesta => {
-                    const fila = document.createElement("tr");
-                    const preguntasTexto = encuesta.lstPreguntaEncuesta?.map(p => p.texto).join(", ") || "Sin preguntas";
-                    const fecha = new Date(encuesta.fechaCreacion).toLocaleDateString();
-                    const creador = encuesta.lstUsuarioCreador?.map(u => u.nombre).join(", ") || "Desconocido";
+        cuerpoTabla.innerHTML = "";
 
-                    fila.innerHTML = `
-                        <td>${encuesta.titulo}</td>
-                        <td>${creador}</td>
-                        <td>${fecha}</td>
-                        <td><button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button></td>`;
-                    cuerpoTabla.appendChild(fila);
+        if (dto.lstEncuestasDisponibles?.length > 0) {
+            dto.lstEncuestasDisponibles.forEach(encuesta => {
+                const fila = document.createElement("tr");
+
+                const preguntasTexto = encuesta.lstPreguntaEncuesta?.map(p => p.texto).join(", ") || "Sin preguntas";
+                const fecha = new Date(encuesta.fechaCreacion);
+                const creador = encuesta.lstUsuarioCreador?.map(u => u.nombre).join(", ") || "Desconocido";
+
+                fila.innerHTML = `
+                <td data-label="Título">${encuesta.titulo}</td>
+                <td data-label="Creado por">${creador}</td>
+                <td data-label="Fecha">${fecha.toLocaleDateString()}</td>
+                <td>
+                    <button class="btnEliminar" data-id="${encuesta.id}">🗑️ Eliminar</button>
+                </td>
+            `;
+
+                // Asignar evento al botón de eliminar
+                fila.querySelector(".btnEliminar").addEventListener("click", async () => {
+                    if (!confirm("¿Estás seguro de eliminar esta encuesta?")) return;
+
+                    try {
+                        const res = await fetch(`https://localhost:44341/api/encuesta/${encuesta.id}`, {
+                            method: "DELETE",
+                            headers: {
+                                "Authorization": "Bearer " + sessionStorage.getItem("token")
+                            }
+                        });
+
+                        const msg = await res.text();
+                        if (!res.ok) throw new Error(msg);
+
+                        alert("✅ " + msg);
+                        // Puedes volver a pedir los datos actualizados o usar SignalR para ello
+                    } catch (err) {
+                        alert("❌ Error: " + err.message);
+                    }
                 });
-            } else {
-                const filaVacia = document.createElement("tr");
-                filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
-                cuerpoTabla.appendChild(filaVacia);
-            }
+
+                cuerpoTabla.appendChild(fila);
+            });
+        } else {
+            const filaVacia = document.createElement("tr");
+            filaVacia.innerHTML = `<td colspan="6" class="empty">No hay encuestas disponibles</td>`;
+            cuerpoTabla.appendChild(filaVacia);
         }
-    });
+    }
+    connection.on("RespuestasRecibidas", actualizarVistaConDatos);
+
+
 
     connection.start()
         .then(() => console.log("Conectado al Hub de encuestas"))
